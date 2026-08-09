@@ -46,11 +46,13 @@ body{
 .bg-orb:nth-child(2){width:400px;height:400px;background:#7c3aed;bottom:-20%;right:-15%;animation-delay:5s}
 @keyframes orbFloat{0%{transform:translate(0,0) scale(1)}25%{transform:translate(50px,-60px) scale(1.08)}50%{transform:translate(-40px,50px) scale(.92)}75%{transform:translate(30px,30px) scale(1.04)}100%{transform:translate(-20px,-20px) scale(.97)}}
 .bg-grid{display:none}
+.bg-orb.orb-gold{width:300px;height:300px;background:#d4a853;top:50%;left:50%;animation-delay:10s;opacity:.08}
+
 .bg-gradient-bottom{position:fixed;bottom:0;left:0;right:0;height:200px;background:linear-gradient(to top,var(--bg),transparent);z-index:0;pointer-events:none}
 
 /* ===== Particles ===== */
 .particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.particle{position:absolute;width:2px;height:2px;border-radius:50%;background:rgba(255,255,255,.15);animation:particleRise linear infinite}
+.particle{position:absolute;width:2px;height:2px;border-radius:50%;background:rgba(212,168,83,.25);animation:particleRise linear infinite;box-shadow:0 0 6px rgba(212,168,83,.15)}
 .particle:nth-child(1){left:10%;animation-duration:20s}.particle:nth-child(2){left:40%;animation-delay:5s;width:3px;height:3px;animation-duration:24s}
 .particle:nth-child(3){left:70%;animation-delay:10s;animation-duration:22s}.particle:nth-child(4){left:90%;animation-delay:3s;width:2.5px;height:2.5px;animation-duration:18s}
 @keyframes particleRise{0%{bottom:-5%;opacity:0;transform:translateX(0) scale(1)}10%{opacity:.4}50%{transform:translateX(30px) scale(1.2)}90%{opacity:.1}100%{bottom:110%;opacity:0;transform:translateX(-20px) scale(.8)}}
@@ -146,8 +148,6 @@ body{
 .hero.searching .hero-hint{display:none}
 .hero-hint kbd{display:inline-block;background:rgba(255,255,255,.05);border:1px solid var(--glass-border);padding:2px 9px;border-radius:7px;font-family:inherit;font-size:11px;margin:0 2px;color:var(--text2)}
 
-
-
 /* ===== Results ===== */
 .results-area{display:none;padding:0 16px 120px;max-width:820px;margin:0 auto;position:relative;z-index:1}
 .results-area.show{display:block}
@@ -156,10 +156,6 @@ body{
 .results-count span{font-weight:800;color:var(--text);font-size:20px}
 .results-actions{display:flex;gap:8px;align-items:center}
 .results-filter-label{font-size:11px;color:var(--accent);font-weight:700;background:rgba(212,168,83,.08);padding:4px 12px;border-radius:8px;border:1px solid rgba(212,168,83,.12);letter-spacing:.5px}
-.batch-btn{width:34px;height:34px;border-radius:10px;border:1.5px solid var(--border);background:var(--glass);color:var(--text2);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
-.batch-btn:hover{border-color:var(--primary-light);color:var(--primary-light)}
-.batch-btn.active{background:var(--primary-light);color:white;border-color:var(--primary-light)}
-
 /* ===== Filter Bar ===== */
 .filter-bar{display:flex;gap:8px;padding:0 0 14px;overflow-x:auto;scrollbar-width:none}
 .filter-bar::-webkit-scrollbar{display:none}
@@ -177,8 +173,7 @@ body{
 .card:hover{border-color:var(--border-hover);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.25),0 0 0 1px rgba(255,255,255,.04)}
 .card:active{transform:scale(.997) translateY(-1px)}
 .card.expanded{border-color:rgba(212,168,83,.2);box-shadow:0 16px 48px rgba(212,168,83,.06),0 0 0 1px rgba(212,168,83,.1)}
-.card.batch-selected{border-color:var(--primary-light);background:rgba(59,130,246,.06)}
-.card-keyboard-selected{border-color:rgba(212,168,83,.35)!important;background:rgba(212,168,83,.04)!important;box-shadow:0 0 0 2px rgba(212,168,83,.15),0 8px 24px rgba(0,0,0,.2)!important}
+.card.card-keyboard-selected{border-color:rgba(212,168,83,.35)!important;background:rgba(212,168,83,.04)!important;box-shadow:0 0 0 2px rgba(212,168,83,.15),0 8px 24px rgba(0,0,0,.2)!important}
 .card-keyboard-selected .card-arrow{color:var(--accent)}
 .card-main{display:flex;align-items:center;gap:14px;padding:18px 20px;cursor:pointer}
 .card-avatar{width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:white;flex-shrink:0;letter-spacing:1px;position:relative;box-shadow:0 6px 20px rgba(0,0,0,.3);transition:transform .3s}
@@ -207,9 +202,6 @@ body{
 .multi-badge{font-size:10px;color:var(--text3);background:rgba(255,255,255,.05);padding:2px 8px;border-radius:7px;font-weight:700;letter-spacing:.3px;border:1px solid rgba(255,255,255,.04)}
 
 /* Batch checkbox */
-.batch-check{width:22px;height:22px;border-radius:7px;border:2px solid var(--border);background:transparent;flex-shrink:0;display:none;align-items:center;justify-content:center;transition:all .25s cubic-bezier(.4,0,.2,1);cursor:pointer;font-size:12px;color:white}
-.batch-mode .batch-check{display:flex}
-.batch-check.checked{background:var(--primary-light);border-color:var(--primary-light);box-shadow:0 2px 8px rgba(59,130,246,.2);animation:checkPop .3s cubic-bezier(.22,1,.36,1)}
 @keyframes checkPop{0%{transform:scale(.7)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
 
 .card-arrow{color:var(--text3);font-size:18px;transition:transform .4s cubic-bezier(.22,1,.36,1),color .3s;flex-shrink:0}
@@ -248,8 +240,6 @@ mark{background:rgba(212,168,83,.22);color:inherit;padding:0 2px;border-radius:3
 .detail-btn:active{transform:scale(.96) translateY(0)}
 .btn-pay{background:linear-gradient(135deg,var(--accent),#b8963f);color:white;box-shadow:0 6px 20px rgba(212,168,83,.25)}
 .btn-pay:hover{box-shadow:0 10px 28px rgba(212,168,83,.35)}
-.btn-export-single{background:rgba(255,255,255,.05);color:var(--text2);border:1px solid var(--border)}
-.btn-export-single:hover{background:rgba(255,255,255,.08);border-color:var(--border-hover)}
 .btn-free{background:linear-gradient(135deg,#a78bfa,#7c3aed);color:white;box-shadow:0 6px 20px rgba(124,58,237,.25)}
 .btn-free:hover{box-shadow:0 10px 28px rgba(124,58,237,.35)}
 .btn-call{background:linear-gradient(135deg,#22c55e,#16a34a);color:white;box-shadow:0 6px 20px rgba(34,197,94,.25)}
@@ -295,25 +285,6 @@ mark{background:rgba(212,168,83,.22);color:inherit;padding:0 2px;border-radius:3
 .modal-confirm:disabled{background:rgba(255,255,255,.06);color:var(--text3);box-shadow:none;cursor:not-allowed}
 .modal-confirm:active:not(:disabled){transform:scale(.97)}
 
-/* Export Panel */
-.export-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;display:none;align-items:center;justify-content:center;backdrop-filter:blur(12px)}
-.export-overlay.show{display:flex}
-.export-panel{background:var(--card-solid);border-radius:var(--radius);width:90%;max-width:400px;box-shadow:var(--shadow-lg);animation:popIn .4s cubic-bezier(.22,1,.36,1);overflow:hidden;border:1px solid var(--border)}
-@keyframes popIn{from{transform:scale(.9) translateY(20px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
-.export-header{padding:24px 24px 18px;border-bottom:1px solid var(--border)}
-.export-title{font-size:18px;font-weight:800;color:var(--text)}
-.export-sub{font-size:12px;color:var(--text2);margin-top:4px}
-.export-body{padding:16px 24px}
-.export-option{display:flex;align-items:center;gap:14px;padding:16px;border:2px solid var(--border);border-radius:var(--radius-sm);margin-bottom:10px;cursor:pointer;transition:all .3s cubic-bezier(.4,0,.2,1);background:rgba(255,255,255,.02)}
-.export-option:hover{border-color:var(--accent);background:rgba(212,168,83,.04);transform:translateX(6px);box-shadow:0 4px 16px rgba(0,0,0,.1)}
-.export-option:active{transform:scale(.98)}
-.export-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.export-icon.csv{background:rgba(34,197,94,.1)}.export-icon.json{background:rgba(59,130,246,.1)}.export-icon.print{background:rgba(245,158,11,.1)}
-.export-opt-title{font-size:15px;font-weight:700;color:var(--text)}
-.export-opt-desc{font-size:11px;color:var(--text2);margin-top:2px}
-.export-cancel{width:100%;padding:14px;border:none;background:rgba(255,255,255,.03);color:var(--text2);font-size:15px;font-weight:700;cursor:pointer;border-top:1px solid var(--border);transition:all .2s}
-.export-cancel:hover{background:rgba(255,255,255,.06);color:var(--text)}
-
 /* Receipt */
 .receipt-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:700;display:none;align-items:center;justify-content:center;backdrop-filter:blur(12px)}
 .receipt-overlay.show{display:flex}
@@ -335,16 +306,6 @@ mark{background:rgba(212,168,83,.22);color:inherit;padding:0 2px;border-radius:3
 .receipt-time{font-family:"SF Mono",monospace;font-size:11px;color:var(--text2);margin-top:4px}
 .receipt-close{width:100%;padding:15px;border:none;background:rgba(255,255,255,.03);color:var(--text);font-size:15px;font-weight:700;cursor:pointer;border-top:1px solid var(--border);transition:all .2s}
 .receipt-close:hover{background:rgba(255,255,255,.06)}
-
-/* FAB */
-.fab-group{position:fixed;bottom:24px;right:20px;display:none;flex-direction:column;gap:10px;z-index:50;align-items:flex-end}
-.fab-group.show{display:flex}
-.fab{width:54px;height:54px;border-radius:17px;border:none;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s cubic-bezier(.4,0,.2,1);box-shadow:0 8px 28px rgba(0,0,0,.35)}
-.fab:active{transform:scale(.86)}
-.fab-export{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:white}
-.fab-top{background:var(--card-solid);color:var(--text2);border:1px solid var(--border);opacity:0;transform:translateY(10px);transition:all .35s cubic-bezier(.4,0,.2,1)}
-.fab-group.show .fab-top{opacity:1;transform:translateY(0);transition-delay:.2s}
-.fab:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(0,0,0,.4)}
 
 /* Toast */
 .toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(13,20,32,.92);color:white;padding:15px 30px;border-radius:18px;font-size:14px;font-weight:600;opacity:0;transition:all .4s cubic-bezier(.22,1,.36,1);pointer-events:none;z-index:9999;backdrop-filter:blur(20px) saturate(1.3);max-width:85%;text-align:center;box-shadow:0 16px 40px rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08)}
@@ -473,8 +434,7 @@ mark{background:rgba(212,168,83,.22);color:inherit;padding:0 2px;border-radius:3
         <div class="results-count" id="resultsInfo">显示 <span>0</span> 条</div>
         <div class="results-actions">
             <div class="results-filter-label" id="filterLabel"></div>
-            <button class="batch-btn" id="batchBtn" onclick="toggleBatchMode()" title="批量操作">☑️</button>
-        </div>
+            </div>
     </div>
     <div class="filter-bar" id="filterBar"></div>
     <div id="list"></div>
@@ -487,11 +447,6 @@ mark{background:rgba(212,168,83,.22);color:inherit;padding:0 2px;border-radius:3
 </div>
 
 <!-- FABs -->
-<div class="fab-group" id="fabGroup">
-    <button class="fab fab-top" onclick="scrollToTop()" title="回到顶部">↑</button>
-    <button class="fab fab-import" onclick="showImportPanel()" title="导入数据" style="background:linear-gradient(135deg,#22c55e,#16a34a);color:white;box-shadow:0 8px 24px rgba(34,197,94,.3)">📥</button>
-    <button class="fab fab-export" onclick="showExportPanel()" title="导出数据">📤</button>
-</div>
 
 <!-- Pay Modal -->
 <div class="modal-overlay" id="payModal">
@@ -503,20 +458,9 @@ mark{background:rgba(212,168,83,.22);color:inherit;padding:0 2px;border-radius:3
 </div>
 
 <!-- Export Panel -->
-<div class="export-overlay" id="exportPanel">
-    <div class="export-panel">
-        <div class="export-header">
-            <div class="export-title">📤 导出数据</div>
-            <div class="export-sub" id="exportCount">共 0 条记录</div>
-        </div>
-        <div class="export-body">
-            <div class="export-option" onclick="exportCSV()">
-                <div class="export-icon csv">📊</div>
-                <div><div class="export-opt-title">导出 CSV</div><div class="export-opt-desc">Excel / WPS 可直接打开</div></div>
-            </div>
+
             <div class="export-option" onclick="exportJSON()">
                 <div class="export-icon json">{ }</div>
-                <div><div class="export-opt-title">导出 JSON</div><div class="export-opt-desc">结构化数据，便于程序处理</div></div>
             </div>
             <div class="export-option" onclick="printList()">
                 <div class="export-icon print">🖨️</div>
@@ -528,27 +472,7 @@ mark{background:rgba(212,168,83,.22);color:inherit;padding:0 2px;border-radius:3
 </div>
 
 <!-- Import Panel -->
-<div class="export-overlay" id="importPanel">
-    <div class="export-panel">
-        <div class="export-header">
-            <div class="export-title">📥 导入数据</div>
-            <div class="export-sub" id="importInfo">支持 CSV / JSON 格式</div>
-        </div>
-        <div class="export-body">
-            <div class="export-option" onclick="document.getElementById('importFileCSV').click()" style="border-color:rgba(34,197,94,.15)">
-                <div class="export-icon csv">📊</div>
-                <div><div class="export-opt-title">导入 CSV</div><div class="export-opt-desc">从 Excel / WPS 导出的 CSV 文件</div></div>
-                <input type="file" id="importFileCSV" accept=".csv,text/csv" style="display:none" onchange="handleImportCSV(this)">
-            </div>
-            <div class="export-option" onclick="document.getElementById('importFileJSON').click()" style="border-color:rgba(59,130,246,.15)">
-                <div class="export-icon json">{ }</div>
-                <div><div class="export-opt-title">导入 JSON</div><div class="export-opt-desc">从本系统导出的 JSON 文件</div></div>
-                <input type="file" id="importFileJSON" accept=".json,application/json" style="display:none" onchange="handleImportJSON(this)">
-            </div>
-            <div class="export-option" onclick="resetData()" style="border-color:rgba(220,38,38,.15)">
-                <div class="export-icon" style="background:rgba(220,38,38,.1)">🔄</div>
-                <div><div class="export-opt-title">重置数据</div><div class="export-opt-desc">恢复为系统默认数据</div></div>
-            </div>
+
         </div>
         <button class="export-cancel" onclick="closeImportPanel()">取消</button>
     </div>
@@ -692,7 +616,7 @@ const typeOrder={'公司':0,'商户':1,'社会':2,'特殊车辆':3};
 function sortByType(data){return [...data].sort((a,b)=>{const d=(typeOrder[a.type]??9)-(typeOrder[b.type]??9);if(d!==0)return d;return a.name.localeCompare(b.name,'zh')})}
 
 // ===== State =====
-let currentFilter='all',sortAsc=true,expandedId=null,isSearching=false,batchMode=false,batchSelected=new Set(),selectedIndex=-1;
+let currentFilter='all',sortAsc=true,expandedId=null,isSearching=false,selectedIndex=-1;
 const amounts={'公司':200,'商户':300,'社会':400,'特殊车辆':0};
 
 // ===== localStorage =====
@@ -759,8 +683,7 @@ function onKeyDown(e){
         const pay=document.querySelector('.modal-overlay.show');
         if(pay){pay.classList.remove('show');return}
         const exp=document.querySelector('.export-overlay.show');
-        if(exp){closeExportPanel();return}
-        if(batchMode){toggleBatchMode();return}
+        if(exp){return}
         if(isSearching)exitSearchMode();
         document.getElementById('searchInput').blur();
     }
@@ -827,8 +750,6 @@ function animateCounter(id,target){
     requestAnimationFrame(update);
 }
 
-
-
 // ===== Search =====
 let searchTimeout;
 function onSearchInput(){
@@ -843,14 +764,14 @@ function enterSearchMode(){
     isSearching=true;
     document.getElementById('hero').classList.add('searching');
     document.getElementById('resultsArea').classList.add('show');
-    document.getElementById('fabGroup').classList.add('show');
+    
     renderFilterBar();
 }
 function exitSearchMode(){
-    isSearching=false;currentFilter='all';batchMode=false;batchSelected.clear();selectedIndex=-1;
+    isSearching=false;currentFilter='all';selectedIndex=-1;
     document.getElementById('hero').classList.remove('searching');
     document.getElementById('resultsArea').classList.remove('show');
-    document.getElementById('fabGroup').classList.remove('show');
+    
     document.getElementById('searchInput').value='';
     document.getElementById('searchClear').classList.remove('show');
     document.getElementById('list').classList.remove('batch-mode');
@@ -873,20 +794,7 @@ function highlightSelected(cards){
 function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'})}
 
 // ===== Batch Mode =====
-function toggleBatchMode(){
-    batchMode=!batchMode;
-    batchSelected.clear();
-    document.getElementById('batchBtn').classList.toggle('active',batchMode);
-    document.getElementById('list').classList.toggle('batch-mode',batchMode);
-    renderList();
-}
-function toggleBatchItem(id){
-    if(batchSelected.has(id))batchSelected.delete(id);else batchSelected.add(id);
-    renderList();
-}
-function batchPayAll(){
-    if(!batchSelected.size)return showToast('请先选择车辆');
-    showToast(`已选中 ${batchSelected.size} 辆车辆，功能开发中`);
+辆车辆，功能开发中`);
 }
 
 // ===== Filter Bar =====
@@ -899,7 +807,7 @@ function renderFilterBar(){
         `<button class="filter-back" onclick="goHome()" title="返回首页 (Esc)">←</button>`+
         types.map(t=>`<div class="filter-chip ${currentFilter===t.key?'active':''}" onclick="setFilter('${t.key}')">${t.label}<span class="chip-num">${c[t.key]||0}</span></div>`).join('');
 }
-function setFilter(f){currentFilter=f;expandedId=null;batchSelected.clear();selectedIndex=-1;renderFilterBar();renderList()}
+function setFilter(f){currentFilter=f;expandedId=null;selectedIndex=-1;renderFilterBar();renderList()}
 function toggleSort(){sortAsc=!sortAsc;renderList();showToast(sortAsc?'按名称 A→Z':'按名称 Z→A')}
 
 // ===== Highlight =====
@@ -934,12 +842,12 @@ function renderList(){
     const typeIcon={'公司':'公','商户':'商','社会':'社','特殊车辆':'特'};
     const typeEmoji={'公司':'🏢','商户':'🏪','社会':'🚗','特殊车辆':'⭐'};
 
-    list.className=batchMode?'batch-mode':'';
+    list.className='';
     list.innerHTML=data.map((item,idx)=>{
         const id=`${item.name}-${item.phone}-${item.plates[0]}`;
         const isOpen=expandedId===id;
         const m=checkMatch(item,kw);
-        const isBatch=batchSelected.has(id);
+        
 
         let matchBadges='';
         if(kw&&m.has){
@@ -962,8 +870,7 @@ function renderList(){
         const animDelay=Math.min(idx*30,300);
 
         return`<div class="card ${isOpen?'expanded':''} ${isBatch?'batch-selected':''}" style="animation:cardIn .4s ${animDelay}ms both cubic-bezier(.4,0,.2,1)">
-            <div class="card-main" onclick="${batchMode?`toggleBatchItem('${escapedId}')`:`toggleCard('${escapedId}')`}">
-                ${batchMode?`<div class="batch-check ${isBatch?'checked':''}" onclick="event.stopPropagation();toggleBatchItem('${escapedId}')">${isBatch?'✓':''}</div>`:''}
+            <div class="card-main" onclick="`toggleCard('${escapedId}')`">
                 <div class="card-avatar ${typeMap[item.type]}">${typeEmoji[item.type]||typeIcon[item.type]}</div>
                 <div class="card-body">
                     <div class="card-top">
@@ -977,7 +884,7 @@ function renderList(){
                     ${item.phone?`<div class="card-phone-row"><span class="card-phone-icon">📞</span><a href="tel:${item.phone}" class="detail-phone" onclick="event.stopPropagation()">${hl(item.phone,kw)}</a></div>`:''}
                     ${matchBadges}
                 </div>
-                ${!batchMode?`<div class="card-arrow">▾</div>`:''}
+                '<div class="card-arrow">▾</div>'
             </div>
             <div class="card-detail">
                 <div class="card-detail-inner">
@@ -992,7 +899,7 @@ function renderList(){
                             ?`<button class="detail-btn btn-free" onclick="event.stopPropagation();freePass('${escapedId}')">✨ 免费放行</button>`
                             :`<button class="detail-btn btn-pay" onclick="event.stopPropagation();openPay('${escapedId}','${item.type}','${item.name.replace(/'/g,"\\'")}','${item.phone}','${item.plates[0]}','${(item.notes[0]||'').replace(/'/g,"\\'")}')">💰 立即缴费</button>`}
                         ${item.phone?`<button class="detail-btn btn-call" onclick="event.stopPropagation()" href="tel:${item.phone}" style="flex:0.6">📞 拨打</button>`:''}
-                        <button class="detail-btn btn-export-single" onclick="event.stopPropagation();exportSingle('${escapedId}')">📋 复制</button>
+                        
                     </div>
                 </div>
             </div>
@@ -1089,12 +996,7 @@ function closeReceipt(){document.getElementById('receiptOverlay').classList.remo
 document.getElementById('receiptOverlay').addEventListener('click',function(e){if(e.target===this)closeReceipt()});
 
 // ===== Export =====
-function showExportPanel(){const d=getFilteredData();document.getElementById('exportCount').textContent=`当前筛选共 ${d.length} 条记录`;document.getElementById('exportPanel').classList.add('show')}
-function closeExportPanel(){document.getElementById('exportPanel').classList.remove('show')}
-document.getElementById('exportPanel').addEventListener('click',function(e){if(e.target===this)closeExportPanel()});
-
-function getFilteredData(){
-    const kw=document.getElementById('searchInput').value.trim().toLowerCase();
+条记录`;
     let data=sortByType(group(carData));
     if(currentFilter!=='all')data=data.filter(i=>i.type===currentFilter);
     if(kw)data=data.filter(i=>{
@@ -1107,17 +1009,11 @@ function getFilteredData(){
     return data;
 }
 
-function exportCSV(){
-    const data=getFilteredData();const BOM='\uFEFF';
-    const rows=[['姓名','电话','车牌号','类型','备注']];
-    data.forEach(i=>{i.plates.forEach(p=>{rows.push([`"${i.name.trim()}"`,i.phone,p,i.type,`"${i.notes.join('、')}"`])})});
+"`,i.phone,p,i.type,`"${i.notes.join('、')}"`])})});
     download(BOM+rows.map(r=>r.join(',')).join('\n'),'海迪耶车辆信息.csv','text/csv;charset=utf-8');
-    closeExportPanel();showToast(`✅ 已导出 ${data.length} 条 CSV`);
 }
-function exportJSON(){const d=getFilteredData();download(JSON.stringify(d,null,2),'海迪耶车辆信息.json','application/json');closeExportPanel();showToast(`✅ 已导出 ${d.length} 条 JSON`)}
-function printList(){closeExportPanel();document.querySelectorAll('.card').forEach(c=>c.classList.add('expanded'));setTimeout(()=>window.print(),300)}
-function exportSingle(id){
-    const item=group(carData).find(i=>`${i.name}-${i.phone}-${i.plates[0]}`===id);if(!item)return;
+条 JSON`)}
+-${i.phone}-${i.plates[0]}`===id);if(!item)return;
     copyText([`姓名：${item.name.trim()}`,item.phone?`电话：${item.phone}`:'',`车牌：${item.plates.join(' / ')}`,`类型：${item.type}`,item.notes.length?`备注：${item.notes.join('、')}`:''].filter(Boolean).join('\n'));
 }
 
@@ -1128,34 +1024,15 @@ function fallbackCopy(t){const ta=document.createElement('textarea');ta.value=t;
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._toastTimer);window._toastTimer=setTimeout(()=>t.classList.remove('show'),2400)}
 
 // ===== Import Panel =====
-function showImportPanel(){document.getElementById('importPanel').classList.add('show')}
-function closeImportPanel(){document.getElementById('importPanel').classList.remove('show')}
-document.getElementById('importPanel').addEventListener('click',function(e){if(e.target===this)closeImportPanel()});
-
-function handleImportCSV(input){
-    const file = input.files[0]; if(!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e){
-        try{
-            const text = e.target.result;
-            const parsed = parseCSV(text);
-            if(!parsed.length){showToast('⚠️ CSV 文件为空或格式错误');closeImportPanel();return}
-            importData(parsed, 'CSV');
+importData(parsed, 'CSV');
         }catch(err){showToast('❌ 解析 CSV 失败: ' + err.message)}
     };
     reader.readAsText(file, 'UTF-8');
     input.value = '';
 }
 
-function handleImportJSON(input){
-    const file = input.files[0]; if(!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e){
-        try{
-            const parsed = JSON.parse(e.target.result);
-            if(!Array.isArray(parsed)){showToast('⚠️ JSON 格式错误，需要数组');closeImportPanel();return}
-            const normalized = normalizeImportData(parsed);
-            if(!normalized.length){showToast('⚠️ 未找到有效车辆数据');closeImportPanel();return}
+const normalized = normalizeImportData(parsed);
+            if(!normalized.length){showToast('⚠️ 未找到有效车辆数据');return}
             importData(normalized, 'JSON');
         }catch(err){showToast('❌ 解析 JSON 失败: ' + err.message)}
     };
@@ -1219,24 +1096,10 @@ function normalizeType(t){
     return '社会';
 }
 
-function normalizeImportData(arr){
-    return arr.filter(item => item && item.plate).map(item => ({
-        name: item.name || '-',
-        phone: item.phone || '',
-        plate: item.plate,
-        type: normalizeType(item.type || '社会'),
-        note: item.note || item.notes || ''
-    }));
+));
 }
 
-function importData(newData, format){
-    // Build existing plate set for duplicate detection
-    const existingPlates = new Set(carData.map(c => c.plate.replace(/\s/g,'')));
-    let added = 0, skipped = 0;
-    newData.forEach(item => {
-        const key = item.plate.replace(/\s/g,'');
-        if(existingPlates.has(key)){skipped++}
-        else{
+else{
             carData.push(item);
             existingPlates.add(key);
             added++;
@@ -1246,24 +1109,12 @@ function importData(newData, format){
     renderStats();
     renderFilterBar();
     renderList();
-    closeImportPanel();
-    showToast(`✅ ${format} 导入完成：新增 ${added} 条${skipped ? `，跳过 ${skipped} 条重复` : ''}`);
-}
-
-function resetData(){
-    if(!confirm('确定要重置为系统默认数据？\n所有自定义修改将丢失！')) return;
-    carData = [...defaultCarData];
-    saveCarData();
-    renderStats();
-    renderFilterBar();
-    renderList();
-    closeImportPanel();
-    showToast('🔄 数据已重置为默认');
+    
 }
 
 // ===== FAB Import Style =====
 const fabStyle = document.createElement('style');
-fabStyle.textContent = `.fab-import:active{transform:scale(.88)}.fab-import:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(34,197,94,.4)}`;
+box-shadow:0 12px 28px rgba(34,197,94,.4)}`;
 document.head.appendChild(fabStyle);
 
 // Prevent double-tap zoom
@@ -1272,21 +1123,11 @@ document.addEventListener('touchend',e=>{const now=Date.now();if(now-lastTap<300
 </script>
 
 <script>
-// PWA Service Worker
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js').catch(function(){});
-}
-var _deferredPrompt=null;
-window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();_deferredPrompt=e;_showInstall()});
-window.addEventListener('appinstalled',function(){_deferredPrompt=null;var b=document.getElementById('_installB');if(b)b.remove()});
-function _showInstall(){
-  if(document.getElementById('_installB'))return;
-  var b=document.createElement('div');b.id='_installB';
-  b.style.cssText='position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,rgba(255,255,255,.1),rgba(255,255,255,.04));backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.12);padding:14px 22px;border-radius:16px;z-index:99999;display:flex;align-items:center;gap:12px;color:#fff;font-size:13px;box-shadow:0 8px 32px rgba(0,0,0,.4);font-family:inherit;max-width:92vw';
-  b.innerHTML='<span style="font-size:24px">📱</span><div style="flex:1"><div style="font-weight:700">安装到手机</div><div style="color:rgba(255,255,255,.5);font-size:11px;margin-top:2px">像App一样使用，支持离线</div></div><button onclick="_doInstall()" style="background:linear-gradient(135deg,#d4a853,#f0d48a);color:#0c1220;border:none;padding:8px 18px;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit">安装</button><button onclick="this.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:18px;padding:0 4px">✕</button>';
-  document.body.appendChild(b);
-}
-function _doInstall(){if(!_deferredPrompt)return;_deferredPrompt.prompt();_deferredPrompt.userChoice.then(function(){_deferredPrompt=null;var b=document.getElementById('_installB');if(b)b.remove()})}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(function(){})}
+var _dp=null;window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();_dp=e;_si()});
+window.addEventListener('appinstalled',function(){_dp=null;var b=document.getElementById('_ib');if(b)b.remove()});
+function _si(){if(document.getElementById('_ib'))return;var b=document.createElement('div');b.id='_ib';b.style.cssText='position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,rgba(255,255,255,.1),rgba(255,255,255,.04));backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.12);padding:14px 22px;border-radius:16px;z-index:99999;display:flex;align-items:center;gap:12px;color:#fff;font-size:13px;box-shadow:0 8px 32px rgba(0,0,0,.4);max-width:92vw';b.innerHTML='<span style="font-size:24px">📱</span><div style="flex:1"><div style="font-weight:700">安装到手机</div><div style="color:rgba(255,255,255,.5);font-size:11px">像App一样使用</div></div><button onclick="_di()" style="background:linear-gradient(135deg,#d4a853,#f0d48a);color:#0c1220;border:none;padding:8px 18px;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer">安装</button><button onclick="this.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:18px;padding:0 4px">✕</button>';document.body.appendChild(b)}
+function _di(){if(!_dp)return;_dp.prompt();_dp.userChoice.then(function(){_dp=null;var b=document.getElementById('_ib');if(b)b.remove()})}
 </script>
 </body>
 </html>
