@@ -843,9 +843,8 @@ function renderList(){
 
         const animDelay=Math.min(idx*30,300);
 
-        return`<div class="card ${isOpen?'expanded':''} ${isBatch?'batch-selected':''}" style="animation:cardIn .4s ${animDelay}ms both cubic-bezier(.4,0,.2,1)">
+        return`<div class="card ${isOpen?'expanded':''}" style="animation:cardIn .4s ${animDelay}ms both cubic-bezier(.4,0,.2,1)">
             <div class="card-main" onclick="toggleCard('${escapedId}')">
-                ''
                 <div class="card-avatar ${typeMap[item.type]}">${typeEmoji[item.type]||typeIcon[item.type]}</div>
                 <div class="card-body">
                     <div class="card-top">
@@ -859,7 +858,7 @@ function renderList(){
                     ${item.phone?`<div class="card-phone-row"><span class="card-phone-icon">📞</span><a href="tel:${item.phone}" class="detail-phone" onclick="event.stopPropagation()">${hl(item.phone,kw)}</a></div>`:''}
                     ${matchBadges}
                 </div>
-                '<div class="card-arrow">▾</div>'
+                <div class="card-arrow">▾</div>
             </div>
             <div class="card-detail">
                 <div class="card-detail-inner">
