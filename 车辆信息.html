@@ -844,7 +844,7 @@ function renderList(){
         const animDelay=Math.min(idx*30,300);
 
         return`<div class="card ${isOpen?'expanded':''} ${isBatch?'batch-selected':''}" style="animation:cardIn .4s ${animDelay}ms both cubic-bezier(.4,0,.2,1)">
-            <div class="card-main" onclick="`toggleCard('${escapedId}')`">
+            <div class="card-main" onclick="toggleCard('${escapedId}')">
                 ''
                 <div class="card-avatar ${typeMap[item.type]}">${typeEmoji[item.type]||typeIcon[item.type]}</div>
                 <div class="card-body">
