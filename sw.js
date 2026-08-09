@@ -1,4 +1,4 @@
-const CACHE_NAME = 'haidiya-portal-v2';
+const CACHE_NAME = 'haidiya-portal-v3';
 const ASSETS = [
   './',
   './index.html',
