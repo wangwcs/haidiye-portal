@@ -1,9 +1,12 @@
-const CACHE_NAME = 'haidiya-portal-v1';
+const CACHE_NAME = 'haidiya-portal-v2';
 const ASSETS = [
   './',
   './index.html',
   './系统导航.html',
-  './manifest.json'
+  './车辆信息.html',
+  './员工通讯录.html',
+  './manifest.json',
+  './icons/icon-192.svg'
 ];
 
 // Install: cache core assets
