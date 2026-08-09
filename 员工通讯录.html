@@ -54,7 +54,9 @@
 
     /* HEADER */
     .header{background:linear-gradient(135deg,#0f172a,#1e293b 60%,#2d3a4e);position:sticky;top:0;z-index:100;box-shadow:0 4px 30px rgba(0,0,0,.2);border-bottom:1px solid rgba(201,168,76,.12)}
-    .header-inner{max-width:680px;margin:0 auto;padding:20px 20px 16px}
+    .header-inner{max-width:680px;margin:0 auto;padding:20px 20px 16px;position:relative}
+    .back-btn{position:absolute;top:20px;left:16px;width:36px;height:36px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;transition:all .3s}
+    .back-btn:hover{background:rgba(255,255,255,.12);color:#fff}
     .header-brand{display:flex;align-items:center;gap:14px;margin-bottom:14px}
     .brand-icon{width:46px;height:46px;background:linear-gradient(135deg,var(--gold),var(--gold-light));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 20px rgba(201,168,76,.2);flex-shrink:0;position:relative;overflow:hidden}
     .brand-icon::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(255,255,255,.12),transparent 40%);animation:brandShine 6s linear infinite}
@@ -529,6 +531,7 @@ function render() {
 
   // ─── HEADER ───
   h += `<header class="header"><div class="header-inner">
+    <button class="back-btn" onclick="window.location.href='./index.html'" title="返回导航">←</button>
     <div class="header-brand">
       <div class="brand-icon">🏔️</div>
       <div class="brand-text"><h1>青海开元大饭店</h1><div class="brand-sub">INTERNAL DIRECTORY</div></div>
