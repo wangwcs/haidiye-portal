@@ -148,7 +148,7 @@ body{
 
 
 /* ===== Results ===== */
-.results-area{display:none;padding:0 16px 120px;max-width:820px;margin:0 auto;position:relative;z-index:1}
+.results-area{display:none;padding:16px 16px 120px;max-width:820px;margin:0 auto;position:relative;z-index:1}
 .results-area.show{display:block}
 .results-header{padding:16px 4px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
 .results-count{font-size:13px;color:var(--text2)}
@@ -878,6 +878,16 @@ function renderList(){
             </div>
         </div>`;
     }).join('');
+
+    // Auto-scroll to first result
+    if(kw && data.length > 0) {
+        const firstCard = list.querySelector('.card');
+        if(firstCard) {
+            setTimeout(() => {
+                firstCard.scrollIntoView({behavior:'smooth', block:'start'});
+            }, 100);
+        }
+    }
 }
 
 // Card enter animation
