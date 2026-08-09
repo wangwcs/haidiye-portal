@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>海迪耶国际饭店 · 智慧停车</title>
+  <meta name="theme-color" content="#060b14">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="智慧停车">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192.svg">
+  <link rel="icon" type="image/svg+xml" href="icons/icon-192.svg">
+
+<style>
+:root {
+    --primary:#1e3a5f;--primary-light:#3b82f6;--primary-dark:#0f1a2e;
+    --accent:#d4a853;--accent-light:#f0d48a;--gold-bg:#fdf8ed;
+    --company:#2563eb;--company-bg:#eff6ff;--company-grad:linear-gradient(135deg,#3b82f6,#1d4ed8);
+    --merchant:#b45309;--merchant-bg:#fffbeb;--merchant-grad:linear-gradient(135deg,#f59e0b,#d97706);
+    --social:#0f766e;--social-bg:#f0fdfa;--social-grad:linear-gradient(135deg,#14b8a6,#0d9488);
+    --special:#7c3aed;--special-bg:#f5f3ff;--special-grad:linear-gradient(135deg,#a78bfa,#7c3aed);
+    --danger:#dc2626;--success:#22c55e;
+    --bg:#060b14;--card:rgba(255,255,255,.05);--card-solid:#0d1420;
+    --border:rgba(255,255,255,.06);--border-hover:rgba(255,255,255,.14);
+    --text:#eef2f7;--text2:rgba(255,255,255,.5);--text3:rgba(255,255,255,.25);
+    --radius:22px;--radius-sm:16px;--radius-xs:12px;
+    --shadow:0 2px 8px rgba(0,0,0,.3);--shadow-lg:0 24px 80px rgba(0,0,0,.6);
+    --glass:rgba(255,255,255,.035);--glass-border:rgba(255,255,255,.06);
+    --blur:24px;
+    --glow-blue:0 0 20px rgba(59,130,246,.15);
+    --glow-gold:0 0 20px rgba(212,168,83,.15);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+/* Noise overlay — disabled for perf */
+
+/* ===== Animated BG ===== */
+.bg-scene{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.bg-orb{position:absolute;border-radius:50%;filter:blur(130px);opacity:.14;animation:orbFloat 30s ease-in-out infinite alternate}
+.bg-orb:nth-child(1){width:500px;height:500px;background:#3b82f6;top:-20%;left:-15%}
+.bg-orb:nth-child(2){width:400px;height:400px;background:#7c3aed;bottom:-20%;right:-15%;animation-delay:5s}
+@keyframes orbFloat{0%{transform:translate(0,0) scale(1)}25%{transform:translate(50px,-60px) scale(1.08)}50%{transform:translate(-40px,50px) scale(.92)}75%{transform:translate(30px,30px) scale(1.04)}100%{transform:translate(-20px,-20px) scale(.97)}}
+.bg-grid{display:none}
+.bg-gradient-bottom{position:fixed;bottom:0;left:0;right:0;height:200px;background:linear-gradient(to top,var(--bg),transparent);z-index:0;pointer-events:none}
+
+/* ===== Particles ===== */
+.particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.particle{position:absolute;width:2px;height:2px;border-radius:50%;background:rgba(255,255,255,.15);animation:particleRise linear infinite}
+.particle:nth-child(1){left:10%;animation-duration:20s}.particle:nth-child(2){left:40%;animation-delay:5s;width:3px;height:3px;animation-duration:24s}
+.particle:nth-child(3){left:70%;animation-delay:10s;animation-duration:22s}.particle:nth-child(4){left:90%;animation-delay:3s;width:2.5px;height:2.5px;animation-duration:18s}
+@keyframes particleRise{0%{bottom:-5%;opacity:0;transform:translateX(0) scale(1)}10%{opacity:.4}50%{transform:translateX(30px) scale(1.2)}90%{opacity:.1}100%{bottom:110%;opacity:0;transform:translateX(-20px) scale(.8)}}
+
+/* ===== Hero ===== */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;position:relative;z-index:1;transition:all .6s cubic-bezier(.4,0,.2,1)}
+.hero.searching{min-height:auto;padding:0;position:sticky;top:0;z-index:100;background:rgba(6,11,20,.9);backdrop-filter:blur(28px) saturate(1.3);border-bottom:1px solid var(--border)}
+.hero.searching::after{content:"";position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),var(--primary-light),var(--accent),transparent);opacity:.3;animation:borderGlow 3s linear infinite}
+@keyframes borderGlow{0%{background-position:-200% 0}100%{background-position:200% 0}}
+
+/* ===== Header ===== */
+.hero-brand{text-align:center;margin-bottom:48px;transition:all .5s;position:relative}
+.hero.searching .hero-brand{display:none}
+.hero-logo{width:96px;height:96px;border-radius:28px;margin:0 auto 24px;display:flex;align-items:center;justify-content:center;font-size:42px;background:linear-gradient(135deg,rgba(212,168,83,.2),rgba(212,168,83,.03));backdrop-filter:blur(20px);border:1px solid rgba(212,168,83,.2);box-shadow:0 16px 48px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.08);position:relative;overflow:hidden;transition:transform .4s,box-shadow .4s}
+.hero-logo:hover{transform:scale(1.06) rotate(-2deg);box-shadow:0 20px 60px rgba(212,168,83,.2),inset 0 1px 0 rgba(255,255,255,.1)}
+.hero-logo::before{content:"";position:absolute;inset:-3px;border-radius:29px;background:conic-gradient(from 0deg,var(--accent),transparent 30%,var(--primary-light),transparent 70%,var(--accent));z-index:-1;opacity:.3;animation:logoSpin 12s linear infinite}
+.hero-logo::after{content:"";position:absolute;inset:0;border-radius:28px;background:linear-gradient(135deg,rgba(255,255,255,.1),transparent);pointer-events:none}
+@keyframes logoSpin{to{transform:rotate(360deg)}}
+/* Logo shimmer on hover */
+.hero-logo:hover::after{background:linear-gradient(135deg,rgba(255,255,255,.15),transparent 40%,rgba(255,255,255,.08))}
+.hero-title{font-size:clamp(1.7rem,5.5vw,2.5rem);font-weight:900;letter-spacing:4px;margin-bottom:10px;background:linear-gradient(135deg,#fff 0%,var(--accent-light) 40%,#fff 60%,var(--accent-light) 100%);background-size:200% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmerText 4s ease-in-out infinite}
+@keyframes shimmerText{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.hero-subtitle{font-size:12px;color:var(--text3);letter-spacing:8px;text-transform:uppercase;font-weight:500;opacity:.7}
+
+/* ===== Live Clock ===== */
+.live-clock{text-align:center;margin-bottom:36px;transition:all .5s}
+.hero.searching .live-clock{display:none}
+.clock-time{font-size:clamp(2rem,6vw,2.6rem);font-weight:800;color:rgba(255,255,255,.92);font-variant-numeric:tabular-nums;letter-spacing:4px;font-family:"SF Mono","Fira Code","JetBrains Mono",monospace;text-shadow:0 0 48px rgba(59,130,246,.12);background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(255,255,255,.7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.clock-date{font-size:.8rem;color:var(--text3);margin-top:6px;letter-spacing:1px}
+
+/* ===== Stats Bar ===== */
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:40px;width:100%;max-width:560px;transition:all .5s}
+.hero.searching .stats-bar{display:none}
+.stat-card{padding:20px 10px 16px;border-radius:var(--radius-sm);text-align:center;background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--glass-border);transition:all .4s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}
+.stat-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;opacity:.7;border-radius:2px 2px 0 0;transition:opacity .3s}
+.stat-card:nth-child(1)::before{background:linear-gradient(90deg,transparent,var(--primary-light),transparent)}.stat-card:nth-child(2)::before{background:linear-gradient(90deg,transparent,var(--company),transparent)}
+.stat-card:nth-child(3)::before{background:linear-gradient(90deg,transparent,var(--accent),transparent)}.stat-card:nth-child(4)::before{background:linear-gradient(90deg,transparent,#14b8a6,transparent)}
+.stat-card:hover{border-color:var(--border-hover);transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.25)}
+.stat-card:hover::before{opacity:1}
+.stat-num{font-size:1.7rem;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.stat-num.blue{color:var(--primary-light);text-shadow:0 0 16px rgba(59,130,246,.2)}.stat-num.c-blue{color:var(--company);text-shadow:0 0 16px rgba(37,99,235,.2)}
+.stat-num.gold{color:var(--accent);text-shadow:0 0 16px rgba(212,168,83,.2)}.stat-num.teal{color:#14b8a6;text-shadow:0 0 16px rgba(20,184,166,.2)}
+.stat-label{font-size:.65rem;color:var(--text3);margin-top:5px;font-weight:600;letter-spacing:.5px}
+
+/* ===== Search ===== */
+.search-area{width:100%;max-width:660px;transition:all .5s}
+.hero.searching .search-area{max-width:100%;padding:12px 16px}
+.search-wrap{position:relative;display:flex;gap:10px;align-items:center}
+.search-box{flex:1;position:relative}
+.search-icon{position:absolute;left:18px;top:50%;transform:translateY(-50%);font-size:17px;color:var(--text3);pointer-events:none;transition:color .3s}
+.search-input{width:100%;padding:18px 48px 18px 52px;border:2px solid var(--glass-border);border-radius:18px;font-size:16px;background:var(--glass);color:var(--text);outline:none;transition:all .35s;backdrop-filter:blur(12px)}
+.search-input::placeholder{color:var(--text3);transition:opacity .3s}
+.search-input:focus{border-color:rgba(212,168,83,.5);background:rgba(255,255,255,.08);box-shadow:0 0 0 5px rgba(212,168,83,.08),0 0 30px rgba(212,168,83,.1),0 8px 24px rgba(0,0,0,.2)}
+.search-input:focus~.search-icon{color:var(--accent);filter:drop-shadow(0 0 4px rgba(212,168,83,.3))}
+.search-input:focus::placeholder{opacity:.5}
+.hero.searching .search-input{padding:14px 44px 14px 46px;font-size:15px;border-radius:14px}
+.search-clear{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.1);color:rgba(255,255,255,.5);border:none;font-size:11px;cursor:pointer;display:none;align-items:center;justify-content:center;transition:all .2s}
+.search-clear:hover{background:rgba(255,255,255,.18);color:#fff}
+.search-clear.show{display:flex}
+.search-voice{position:absolute;right:46px;top:50%;transform:translateY(-50%);width:28px;height:28px;border:none;background:none;color:var(--text3);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;border-radius:50%}
+.search-voice:hover{background:rgba(255,255,255,.08);color:var(--text2)}
+.sort-btn{width:52px;height:52px;border:2px solid var(--glass-border);border-radius:16px;background:var(--glass);color:var(--text2);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .3s cubic-bezier(.4,0,.2,1);backdrop-filter:blur(12px);flex-shrink:0}
+.sort-btn:hover{background:rgba(255,255,255,.08);border-color:var(--border-hover);transform:scale(1.06) rotate(10deg)}
+.hero.searching .sort-btn{width:46px;height:46px;border-radius:14px}
+
+/* Hero Tags */
+.hero-tags{display:flex;gap:10px;margin-top:30px;flex-wrap:wrap;justify-content:center;transition:all .5s}
+.hero.searching .hero-tags{display:none}
+.hero-tag{padding:12px 24px;border-radius:30px;font-size:14px;font-weight:600;cursor:pointer;transition:all .35s cubic-bezier(.4,0,.2,1);border:1.5px solid var(--glass-border);color:var(--text2);background:var(--glass);backdrop-filter:blur(12px);position:relative;overflow:hidden}
+.hero-tag::before{content:"";position:absolute;inset:0;opacity:0;transition:opacity .35s;border-radius:inherit}
+.hero-tag:hover{border-color:var(--border-hover);color:var(--text);background:rgba(255,255,255,.07);transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.15)}
+.hero-tag:hover::before{opacity:1}
+.hero-tag:active{transform:translateY(-1px) scale(.97)}
+.hero-tag.company{border-color:rgba(59,130,246,.2);color:rgba(147,197,253,.85)}
+.hero-tag.company::before{background:radial-gradient(circle at center,rgba(59,130,246,.08),transparent 70%)}
+.hero-tag.company:hover{box-shadow:0 8px 24px rgba(59,130,246,.1)}
+.hero-tag.merchant{border-color:rgba(245,158,11,.2);color:rgba(252,211,77,.85)}
+.hero-tag.merchant::before{background:radial-gradient(circle at center,rgba(245,158,11,.08),transparent 70%)}
+.hero-tag.merchant:hover{box-shadow:0 8px 24px rgba(245,158,11,.1)}
+.hero-tag.social{border-color:rgba(20,184,166,.2);color:rgba(153,246,228,.85)}
+.hero-tag.social::before{background:radial-gradient(circle at center,rgba(20,184,166,.08),transparent 70%)}
+.hero-tag.social:hover{box-shadow:0 8px 24px rgba(20,184,166,.1)}
+.hero-tag .tag-count{display:inline-block;background:rgba(255,255,255,.07);padding:1px 9px;border-radius:10px;font-size:11px;margin-left:6px;font-weight:700}
+
+/* Recent searches */
+.recent-searches{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;justify-content:center;transition:all .5s}
+.hero.searching .recent-searches{display:none}
+.recent-tag{padding:6px 14px;border-radius:20px;font-size:12px;color:var(--text3);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04);cursor:pointer;transition:all .2s}
+.recent-tag:hover{color:var(--text2);background:rgba(255,255,255,.06)}
+.recent-label{font-size:11px;color:var(--text3);padding:6px 0;font-weight:600;letter-spacing:.5px}
+
+.hero-hint{margin-top:32px;text-align:center;color:var(--text3);font-size:12px;transition:all .5s;letter-spacing:.3px}
+.hero.searching .hero-hint{display:none}
+.hero-hint kbd{display:inline-block;background:rgba(255,255,255,.05);border:1px solid var(--glass-border);padding:2px 9px;border-radius:7px;font-family:inherit;font-size:11px;margin:0 2px;color:var(--text2)}
+
+
+
+/* ===== Results ===== */
+.results-area{display:none;padding:0 16px 120px;max-width:820px;margin:0 auto;position:relative;z-index:1}
+.results-area.show{display:block}
+.results-header{padding:16px 4px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.results-count{font-size:13px;color:var(--text2)}
+.results-count span{font-weight:800;color:var(--text);font-size:20px}
+.results-actions{display:flex;gap:8px;align-items:center}
+.results-filter-label{font-size:11px;color:var(--accent);font-weight:700;background:rgba(212,168,83,.08);padding:4px 12px;border-radius:8px;border:1px solid rgba(212,168,83,.12);letter-spacing:.5px}
+.batch-btn{width:34px;height:34px;border-radius:10px;border:1.5px solid var(--border);background:var(--glass);color:var(--text2);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.batch-btn:hover{border-color:var(--primary-light);color:var(--primary-light)}
+.batch-btn.active{background:var(--primary-light);color:white;border-color:var(--primary-light)}
+
+/* ===== Filter Bar ===== */
+.filter-bar{display:flex;gap:8px;padding:0 0 14px;overflow-x:auto;scrollbar-width:none}
+.filter-bar::-webkit-scrollbar{display:none}
+.filter-back{width:38px;height:38px;border-radius:12px;border:1.5px solid var(--border);background:var(--glass);color:var(--text2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;backdrop-filter:blur(8px)}
+.filter-back:hover{border-color:var(--accent);color:var(--accent);background:rgba(212,168,83,.06)}
+.filter-chip{padding:9px 18px;border-radius:14px;font-size:13px;font-weight:600;cursor:pointer;transition:all .3s cubic-bezier(.4,0,.2,1);border:1.5px solid var(--border);background:var(--glass);color:var(--text2);white-space:nowrap;flex-shrink:0;backdrop-filter:blur(8px)}
+.filter-chip:hover{border-color:var(--primary-light);color:var(--primary-light);transform:translateY(-1px)}
+.filter-chip.active{background:var(--primary-light);color:white;border-color:var(--primary-light);box-shadow:0 4px 16px rgba(59,130,246,.25)}
+.filter-chip .chip-num{display:inline-block;background:rgba(255,255,255,.08);padding:1px 7px;border-radius:8px;font-size:11px;margin-left:4px;font-weight:700}
+.filter-chip.active .chip-num{background:rgba(255,255,255,.2)}
+
+/* ===== Cards ===== */
+.card{background:var(--glass);backdrop-filter:blur(20px);border-radius:var(--radius);margin-bottom:12px;border:1px solid var(--glass-border);overflow:hidden;transition:all .4s cubic-bezier(.4,0,.2,1);position:relative}
+.card::before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.03),transparent 40%);pointer-events:none;z-index:0}
+.card:hover{border-color:var(--border-hover);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.25),0 0 0 1px rgba(255,255,255,.04)}
+.card:active{transform:scale(.997) translateY(-1px)}
+.card.expanded{border-color:rgba(212,168,83,.2);box-shadow:0 16px 48px rgba(212,168,83,.06),0 0 0 1px rgba(212,168,83,.1)}
+.card.batch-selected{border-color:var(--primary-light);background:rgba(59,130,246,.06)}
+.card-keyboard-selected{border-color:rgba(212,168,83,.35)!important;background:rgba(212,168,83,.04)!important;box-shadow:0 0 0 2px rgba(212,168,83,.15),0 8px 24px rgba(0,0,0,.2)!important}
+.card-keyboard-selected .card-arrow{color:var(--accent)}
+.card-main{display:flex;align-items:center;gap:14px;padding:18px 20px;cursor:pointer}
+.card-avatar{width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:white;flex-shrink:0;letter-spacing:1px;position:relative;box-shadow:0 6px 20px rgba(0,0,0,.3);transition:transform .3s}
+.card-avatar::after{content:"";position:absolute;inset:0;border-radius:16px;background:linear-gradient(135deg,rgba(255,255,255,.18),transparent 50%);pointer-events:none}
+.card:hover .card-avatar{transform:scale(1.05)}
+.card-avatar.company{background:var(--company-grad)}.card-avatar.merchant{background:var(--merchant-grad)}
+.card-avatar.social{background:var(--social-grad)}.card-avatar.special{background:var(--special-grad)}
+.card-body{flex:1;min-width:0}
+.card-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px}
+.card-name{font-size:18px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.badge{padding:4px 11px;border-radius:9px;font-size:10px;font-weight:700;flex-shrink:0;letter-spacing:.5px;text-transform:uppercase;backdrop-filter:blur(8px)}
+.badge.company{background:rgba(37,99,235,.12);color:#93c5fd;border:1px solid rgba(37,99,235,.18)}
+.badge.merchant{background:rgba(180,83,9,.1);color:#fcd34d;border:1px solid rgba(180,83,9,.15)}
+.badge.social{background:rgba(15,118,110,.1);color:#5eead4;border:1px solid rgba(15,118,110,.15)}
+.badge.special{background:rgba(124,58,237,.1);color:#c4b5fd;border:1px solid rgba(124,58,237,.15)}
+.card-plate-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.plate-tag{font-family:"SF Mono","Fira Code","JetBrains Mono","Courier New",monospace;font-size:14.5px;font-weight:700;color:var(--primary-light);background:rgba(59,130,246,.07);padding:5px 12px;border-radius:9px;letter-spacing:.5px;cursor:pointer;transition:all .2s;border:1px solid rgba(59,130,246,.1);position:relative;overflow:hidden}
+.plate-tag::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(59,130,246,.06),transparent);pointer-events:none}
+.plate-tag:active{background:var(--primary-light);color:white;transform:scale(.93)}
+.plate-tag:hover{border-color:rgba(59,130,246,.25);box-shadow:0 2px 12px rgba(59,130,246,.1)}
+.card-phone-row{display:flex;align-items:center;gap:5px;margin-top:5px;font-size:12.5px;color:var(--text2)}
+.card-phone-icon{font-size:12px;opacity:.6;transition:opacity .2s}
+.card-phone-row:hover .card-phone-icon{opacity:1}
+.detail-phone{color:var(--primary-light);text-decoration:none;font-weight:600;transition:color .2s}
+.detail-phone:hover{color:#60a5fa;text-decoration:underline}
+.multi-badge{font-size:10px;color:var(--text3);background:rgba(255,255,255,.05);padding:2px 8px;border-radius:7px;font-weight:700;letter-spacing:.3px;border:1px solid rgba(255,255,255,.04)}
+
+/* Batch checkbox */
+.batch-check{width:22px;height:22px;border-radius:7px;border:2px solid var(--border);background:transparent;flex-shrink:0;display:none;align-items:center;justify-content:center;transition:all .25s cubic-bezier(.4,0,.2,1);cursor:pointer;font-size:12px;color:white}
+.batch-mode .batch-check{display:flex}
+.batch-check.checked{background:var(--primary-light);border-color:var(--primary-light);box-shadow:0 2px 8px rgba(59,130,246,.2);animation:checkPop .3s cubic-bezier(.22,1,.36,1)}
+@keyframes checkPop{0%{transform:scale(.7)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+
+.card-arrow{color:var(--text3);font-size:18px;transition:transform .4s cubic-bezier(.22,1,.36,1),color .3s;flex-shrink:0}
+.card:hover .card-arrow{color:var(--text2)}
+.card.expanded .card-arrow{transform:rotate(180deg);color:var(--accent)}
+
+/* Match badges */
+.match-badges{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap}
+.match-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:8px;letter-spacing:.3px;display:inline-flex;align-items:center;gap:3px;backdrop-filter:blur(4px)}
+.match-badge.plate-match{background:rgba(59,130,246,.1);color:#93c5fd;border:1px solid rgba(59,130,246,.15)}
+.match-badge.phone-match{background:rgba(245,158,11,.1);color:#fcd34d;border:1px solid rgba(245,158,11,.15)}
+.match-badge.name-match{background:rgba(34,197,94,.1);color:#86efac;border:1px solid rgba(34,197,94,.15)}
+.match-badge.note-match{background:rgba(167,139,250,.1);color:#c4b5fd;border:1px solid rgba(167,139,250,.15)}
+.match-badge.type-match{background:rgba(236,72,153,.1);color:#f9a8d4;border:1px solid rgba(236,72,153,.15)}
+mark{background:rgba(212,168,83,.22);color:inherit;padding:0 2px;border-radius:3px}
+.plate-tag mark{background:rgba(59,130,246,.18)}
+
+/* Expand area */
+.card-detail{max-height:0;overflow:hidden;transition:max-height .45s cubic-bezier(.4,0,.2,1),opacity .3s;opacity:0}
+.card.expanded .card-detail{max-height:700px;opacity:1}
+.card-detail-inner{padding:0 20px 20px;border-top:1px solid var(--border)}
+.detail-row{display:flex;align-items:flex-start;padding:10px 0;font-size:14px;gap:12px}
+.detail-row+.detail-row{border-top:1px dashed rgba(255,255,255,.04)}
+.detail-label{color:var(--text3);font-size:11px;min-width:48px;padding-top:2px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.detail-value{flex:1;color:var(--text)}
+.detail-plates{display:flex;flex-wrap:wrap;gap:8px}
+.detail-plate{font-family:"SF Mono","Fira Code","JetBrains Mono","Courier New",monospace;font-size:15px;font-weight:700;color:var(--primary-light);background:rgba(59,130,246,.07);padding:7px 16px;border-radius:11px;cursor:pointer;border:1px solid rgba(59,130,246,.12);transition:all .2s;position:relative;overflow:hidden}
+.detail-plate::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(59,130,246,.05),transparent);pointer-events:none}
+.detail-plate:hover{border-color:rgba(59,130,246,.25);box-shadow:0 2px 12px rgba(59,130,246,.1)}
+.detail-plate:active{background:var(--primary-light);color:white;transform:scale(.93)}
+.detail-note{color:rgba(212,168,83,.85);background:rgba(212,168,83,.05);padding:10px 16px;border-radius:11px;font-size:13px;font-style:italic;border-left:3px solid var(--accent);font-weight:500;line-height:1.5;backdrop-filter:blur(4px)}
+.detail-actions{display:flex;gap:10px;margin-top:14px}
+.detail-btn{flex:1;padding:15px;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;transition:all .3s cubic-bezier(.4,0,.2,1);letter-spacing:.3px;position:relative;overflow:hidden}
+.detail-btn::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.12),transparent);pointer-events:none;border-radius:inherit}
+.detail-btn:hover{transform:translateY(-2px)}
+.detail-btn:active{transform:scale(.96) translateY(0)}
+.btn-pay{background:linear-gradient(135deg,var(--accent),#b8963f);color:white;box-shadow:0 6px 20px rgba(212,168,83,.25)}
+.btn-pay:hover{box-shadow:0 10px 28px rgba(212,168,83,.35)}
+.btn-export-single{background:rgba(255,255,255,.05);color:var(--text2);border:1px solid var(--border)}
+.btn-export-single:hover{background:rgba(255,255,255,.08);border-color:var(--border-hover)}
+.btn-free{background:linear-gradient(135deg,#a78bfa,#7c3aed);color:white;box-shadow:0 6px 20px rgba(124,58,237,.25)}
+.btn-free:hover{box-shadow:0 10px 28px rgba(124,58,237,.35)}
+.btn-call{background:linear-gradient(135deg,#22c55e,#16a34a);color:white;box-shadow:0 6px 20px rgba(34,197,94,.25)}
+
+/* ===== Modals ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(12px)}
+.modal-overlay.show{display:flex}
+.modal{background:var(--card-solid);border-radius:28px 28px 0 0;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;animation:slideUp .45s cubic-bezier(.22,1,.36,1);border:1px solid var(--border);border-bottom:none;scrollbar-width:none;box-shadow:0 -8px 40px rgba(0,0,0,.3)}
+.modal::-webkit-scrollbar{display:none}
+@keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-handle{width:36px;height:4px;background:rgba(255,255,255,.12);border-radius:2px;margin:12px auto 0}
+.modal-header{padding:14px 24px 18px;text-align:center}
+.modal-title{font-size:20px;font-weight:800;color:var(--text)}
+.modal-body{padding:0 24px 32px}
+.modal-info-card{background:rgba(255,255,255,.025);border-radius:var(--radius-sm);padding:18px;margin-bottom:18px;border:1px solid var(--border);backdrop-filter:blur(8px)}
+.modal-info-row{display:flex;justify-content:space-between;padding:6px 0;font-size:14px}
+.modal-info-label{color:var(--text2)}.modal-info-value{font-weight:700;color:var(--text)}
+.modal-plate-big{font-family:"SF Mono","Fira Code","JetBrains Mono","Courier New",monospace;font-size:30px;font-weight:900;color:var(--primary-light);text-align:center;padding:18px;background:rgba(59,130,246,.05);border-radius:var(--radius-sm);margin-bottom:18px;letter-spacing:5px;border:2px solid rgba(59,130,246,.12);text-shadow:0 0 24px rgba(59,130,246,.15);position:relative;overflow:hidden}
+.modal-plate-big::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(59,130,246,.04),transparent 50%);pointer-events:none}
+.pay-methods{display:flex;gap:10px;margin-bottom:20px}
+.pay-method{flex:1;padding:18px;border:2px solid var(--border);border-radius:var(--radius-sm);text-align:center;cursor:pointer;transition:all .3s cubic-bezier(.4,0,.2,1);font-size:14px;font-weight:700;background:rgba(255,255,255,.02);color:var(--text2)}
+.pay-method .pay-icon{font-size:28px;margin-bottom:6px;transition:transform .3s}
+.pay-method:hover{border-color:var(--border-hover);background:rgba(255,255,255,.04);transform:translateY(-2px)}
+.pay-method:hover .pay-icon{transform:scale(1.15)}
+.pay-method.selected{border-color:var(--accent);background:rgba(212,168,83,.06);color:var(--accent);box-shadow:0 0 0 4px rgba(212,168,83,.08),0 4px 16px rgba(212,168,83,.1)}
+.amount-section{text-align:center;margin-bottom:20px}
+.amount-row{display:flex;align-items:center;justify-content:center;gap:24px}
+.amount-adj{width:48px;height:48px;border-radius:50%;border:2px solid var(--border);background:rgba(255,255,255,.03);font-size:22px;font-weight:700;color:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s cubic-bezier(.4,0,.2,1)}
+.amount-adj:active{background:rgba(212,168,83,.12);transform:scale(.86)}
+.amount-adj:hover{border-color:var(--accent);background:rgba(212,168,83,.08);box-shadow:0 0 16px rgba(212,168,83,.12)}
+.amount-value{font-size:40px;font-weight:800;color:var(--text);min-width:150px;font-variant-numeric:tabular-nums}
+.amount-value .currency{font-size:22px;font-weight:600;color:var(--text2)}
+.amount-hint{font-size:13px;color:var(--accent);margin-top:10px;font-weight:600}
+.amount-presets{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.amount-preset{padding:9px 20px;border:1.5px solid var(--border);border-radius:24px;font-size:13px;font-weight:700;color:var(--text2);background:rgba(255,255,255,.02);cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1)}
+.amount-preset:active{transform:scale(.9)}
+.amount-preset.active{border-color:var(--accent);color:var(--accent);background:rgba(212,168,83,.06);box-shadow:0 0 0 3px rgba(212,168,83,.08),0 4px 12px rgba(212,168,83,.1)}
+.amount-preset:hover:not(.active){border-color:var(--border-hover);background:rgba(255,255,255,.04)}
+.modal-confirm{width:100%;padding:18px;border:none;border-radius:var(--radius-sm);font-size:16px;font-weight:800;cursor:pointer;transition:all .3s cubic-bezier(.4,0,.2,1);color:white;background:linear-gradient(135deg,var(--accent),#b8963f);box-shadow:0 8px 24px rgba(212,168,83,.25);letter-spacing:.5px;position:relative;overflow:hidden}
+.modal-confirm::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);transition:left .5s}
+.modal-confirm:hover::before{left:100%}
+.modal-confirm::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.12),transparent);pointer-events:none}
+.modal-confirm:disabled{background:rgba(255,255,255,.06);color:var(--text3);box-shadow:none;cursor:not-allowed}
+.modal-confirm:active:not(:disabled){transform:scale(.97)}
+
+/* Export Panel */
+.export-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;display:none;align-items:center;justify-content:center;backdrop-filter:blur(12px)}
+.export-overlay.show{display:flex}
+.export-panel{background:var(--card-solid);border-radius:var(--radius);width:90%;max-width:400px;box-shadow:var(--shadow-lg);animation:popIn .4s cubic-bezier(.22,1,.36,1);overflow:hidden;border:1px solid var(--border)}
+@keyframes popIn{from{transform:scale(.9) translateY(20px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.export-header{padding:24px 24px 18px;border-bottom:1px solid var(--border)}
+.export-title{font-size:18px;font-weight:800;color:var(--text)}
+.export-sub{font-size:12px;color:var(--text2);margin-top:4px}
+.export-body{padding:16px 24px}
+.export-option{display:flex;align-items:center;gap:14px;padding:16px;border:2px solid var(--border);border-radius:var(--radius-sm);margin-bottom:10px;cursor:pointer;transition:all .3s cubic-bezier(.4,0,.2,1);background:rgba(255,255,255,.02)}
+.export-option:hover{border-color:var(--accent);background:rgba(212,168,83,.04);transform:translateX(6px);box-shadow:0 4px 16px rgba(0,0,0,.1)}
+.export-option:active{transform:scale(.98)}
+.export-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.export-icon.csv{background:rgba(34,197,94,.1)}.export-icon.json{background:rgba(59,130,246,.1)}.export-icon.print{background:rgba(245,158,11,.1)}
+.export-opt-title{font-size:15px;font-weight:700;color:var(--text)}
+.export-opt-desc{font-size:11px;color:var(--text2);margin-top:2px}
+.export-cancel{width:100%;padding:14px;border:none;background:rgba(255,255,255,.03);color:var(--text2);font-size:15px;font-weight:700;cursor:pointer;border-top:1px solid var(--border);transition:all .2s}
+.export-cancel:hover{background:rgba(255,255,255,.06);color:var(--text)}
+
+/* Receipt */
+.receipt-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:700;display:none;align-items:center;justify-content:center;backdrop-filter:blur(12px)}
+.receipt-overlay.show{display:flex}
+.receipt{background:var(--card-solid);border-radius:var(--radius);width:90%;max-width:400px;box-shadow:var(--shadow-lg);animation:popIn .4s cubic-bezier(.22,1,.36,1);overflow:hidden;border:1px solid var(--border)}
+.receipt-header{background:linear-gradient(135deg,#1e3a5f 0%,#2563eb 50%,#1d4ed8 100%);color:white;padding:30px 24px;text-align:center;position:relative;overflow:hidden}
+.receipt-header::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(255,255,255,.08),transparent 60%);pointer-events:none}
+.receipt-header::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.08),transparent);pointer-events:none}
+.receipt-header h3{font-size:21px;font-weight:800;letter-spacing:2px;position:relative}
+.receipt-check{font-size:48px;margin-bottom:10px;display:block;animation:checkBounce .6s cubic-bezier(.4,0,.2,1)}
+@keyframes checkBounce{0%{transform:scale(0)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
+.receipt-body{padding:22px}
+.receipt-section{background:rgba(255,255,255,.025);border-radius:var(--radius-sm);padding:14px;margin-bottom:12px;border:1px solid var(--border);backdrop-filter:blur(4px)}
+.receipt-section-title{font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.receipt-row{display:flex;justify-content:space-between;padding:5px 0;font-size:13px}
+.receipt-label{color:var(--text2)}.receipt-value{font-weight:700;color:var(--text)}
+.receipt-amount{font-size:38px;font-weight:900;color:var(--primary-light);text-align:center;padding:18px;background:rgba(59,130,246,.05);border-radius:var(--radius-sm);margin-bottom:14px;letter-spacing:2px;font-variant-numeric:tabular-nums;text-shadow:0 0 20px rgba(59,130,246,.15)}
+.receipt-note{text-align:center;background:rgba(212,168,83,.06);color:var(--accent);padding:12px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;border-left:3px solid var(--accent);margin-bottom:12px}
+.receipt-footer{text-align:center;padding:12px;border-top:1px dashed rgba(255,255,255,.06);font-size:11px;color:var(--text3);font-weight:500}
+.receipt-time{font-family:"SF Mono",monospace;font-size:11px;color:var(--text2);margin-top:4px}
+.receipt-close{width:100%;padding:15px;border:none;background:rgba(255,255,255,.03);color:var(--text);font-size:15px;font-weight:700;cursor:pointer;border-top:1px solid var(--border);transition:all .2s}
+.receipt-close:hover{background:rgba(255,255,255,.06)}
+
+/* FAB */
+.fab-group{position:fixed;bottom:24px;right:20px;display:none;flex-direction:column;gap:10px;z-index:50;align-items:flex-end}
+.fab-group.show{display:flex}
+.fab{width:54px;height:54px;border-radius:17px;border:none;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s cubic-bezier(.4,0,.2,1);box-shadow:0 8px 28px rgba(0,0,0,.35)}
+.fab:active{transform:scale(.86)}
+.fab-export{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:white}
+.fab-top{background:var(--card-solid);color:var(--text2);border:1px solid var(--border);opacity:0;transform:translateY(10px);transition:all .35s cubic-bezier(.4,0,.2,1)}
+.fab-group.show .fab-top{opacity:1;transform:translateY(0);transition-delay:.2s}
+.fab:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(0,0,0,.4)}
+
+/* Toast */
+.toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(13,20,32,.92);color:white;padding:15px 30px;border-radius:18px;font-size:14px;font-weight:600;opacity:0;transition:all .4s cubic-bezier(.22,1,.36,1);pointer-events:none;z-index:9999;backdrop-filter:blur(20px) saturate(1.3);max-width:85%;text-align:center;box-shadow:0 16px 40px rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Empty */
+.empty{text-align:center;padding:80px 20px;display:none}
+.empty.show{display:block}
+.empty-icon{font-size:60px;margin-bottom:16px;opacity:.4;animation:emptyBounce 2.5s ease-in-out infinite}
+@keyframes emptyBounce{0%,100%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(-10px) rotate(-3deg)}50%{transform:translateY(-6px) rotate(0deg)}75%{transform:translateY(-10px) rotate(3deg)}}
+.empty-text{font-size:16px;color:var(--text2);font-weight:600}
+.empty-hint{font-size:13px;color:var(--text3);margin-top:8px}
+
+/* Footer */
+.footer{text-align:center;padding:32px 20px;color:var(--text3);font-size:11px;line-height:2;font-weight:500;letter-spacing:.3px}
+
+/* Keyboard shortcut hint */
+.kbd-hint{position:fixed;bottom:24px;left:24px;font-size:11px;color:var(--text3);z-index:50;display:flex;gap:12px;opacity:.5}
+.kbd-hint span{display:flex;align-items:center;gap:4px}
+.kbd-hint kbd{background:rgba(255,255,255,.06);border:1px solid var(--glass-border);padding:1px 6px;border-radius:5px;font-family:inherit;font-size:10px}
+
+/* Print */
+@media print{
+    .hero,.search-bar,.filter-bar,.footer,.detail-actions,.card-arrow,.fab-group,.bg-scene,.particles,.bg-gradient-bottom,.kbd-hint,.toast{display:none!important}
+    .card{break-inside:avoid;box-shadow:none;border:1px solid #ddd!important}
+    .card-detail{max-height:none!important;opacity:1!important}
+    .results-area{padding:0;display:block!important}
+    body{background:white;color:#333}
+    .card,.modal,.export-panel,.receipt{background:white!important;border-color:#ddd!important}
+    .card-name,.card-plate-row,.detail-value,.badge{color:#333!important;-webkit-text-fill-color:#333!important}
+}
+
+/* Reduce motion for low-end devices */
+@media(prefers-reduced-motion:reduce){
+    .bg-orb,.particle,.hero-logo::before{animation:none!important}
+    .hero-title{animation:none!important;background-position:0% 50%!important}
+    .hero.searching::after{animation:none!important}
+    *{transition-duration:0.01ms!important;animation-duration:0.01ms!important}
+}
+
+@media(max-width:400px){
+    .hero-title{font-size:22px}
+    .card-main{padding:14px 16px;gap:10px}
+    .card-avatar{width:44px;height:44px;font-size:11px;border-radius:14px}
+    .card-name{font-size:15px}
+    .modal,.export-panel,.receipt{width:98%}
+    .stats-bar{gap:6px}
+    .stat-card{padding:14px 6px 10px}
+    .stat-num{font-size:1.3rem}
+    .amount-value{font-size:32px;min-width:120px}
+    .kbd-hint{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- Animated Background -->
+<div class="bg-scene">
+    <div class="bg-orb"></div><div class="bg-orb"></div>
+</div>
+<div class="bg-gradient-bottom"></div>
+<div class="particles">
+    <div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div>
+</div>
+
+<!-- Hero -->
+<div class="hero" id="hero">
+    <div class="hero-brand">
+        <div class="hero-logo">🅿️</div>
+        <div class="hero-title">海迪耶国际饭店</div>
+        <div class="hero-subtitle">智慧停车管理系统</div>
+    </div>
+
+    <!-- Live Clock -->
+    <div class="live-clock" id="liveClock">
+        <div class="clock-time" id="clockTime"></div>
+        <div class="clock-date" id="clockDate"></div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar" id="statsBar">
+        <div class="stat-card">
+            <div class="stat-num blue" id="statTotal">0</div>
+            <div class="stat-label">总车辆</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-num c-blue" id="statCompany">0</div>
+            <div class="stat-label">公司</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-num gold" id="statMerchant">0</div>
+            <div class="stat-label">商户</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-num teal" id="statSocial">0</div>
+            <div class="stat-label">社会</div>
+        </div>
+    </div>
+
+    <div class="search-area">
+        <div class="search-wrap">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" id="searchInput" placeholder="搜索姓名、电话、车牌号…" autocomplete="off">
+                <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+            </div>
+            <button class="sort-btn" id="sortBtn" onclick="toggleSort()" title="排序 (Alt+S)">↕️</button>
+        </div>
+    </div>
+
+    <div class="hero-tags" id="heroTags">
+        <div class="hero-tag company" onclick="quickFilter('公司')">🏢 公司 <span class="tag-count" id="tagCompany">0</span></div>
+        <div class="hero-tag merchant" onclick="quickFilter('商户')">🏪 商户 <span class="tag-count" id="tagMerchant">0</span></div>
+        <div class="hero-tag social" onclick="quickFilter('社会')">🚗 社会 <span class="tag-count" id="tagSocial">0</span></div>
+        <div class="hero-tag" onclick="quickFilter('特殊车辆')" style="border-color:rgba(124,58,237,.2);color:rgba(196,181,253,.85)">⭐ 特殊 <span class="tag-count" id="tagSpecial">0</span></div>
+    </div>
+
+    <div id="recentSearches" class="recent-searches"></div>
+    <div class="hero-hint">输入 <kbd>姓名</kbd> <kbd>车牌</kbd> 或 <kbd>电话</kbd> 快速查找</div>
+</div>
+
+<!-- Results -->
+<div class="results-area" id="resultsArea">
+    <div class="results-header">
+        <div class="results-count" id="resultsInfo">显示 <span>0</span> 条</div>
+        <div class="results-actions">
+            <div class="results-filter-label" id="filterLabel"></div>
+            <button class="batch-btn" id="batchBtn" onclick="toggleBatchMode()" title="批量操作">☑️</button>
+        </div>
+    </div>
+    <div class="filter-bar" id="filterBar"></div>
+    <div id="list"></div>
+    <div class="empty" id="empty">
+        <div class="empty-icon">🔍</div>
+        <div class="empty-text">未找到匹配记录</div>
+        <div class="empty-hint">试试其他关键词或筛选条件</div>
+    </div>
+    <div class="footer">海迪耶国际饭店 · 智慧停车管理<br>数据更新：2026年5月 · v2.1</div>
+</div>
+
+<!-- FABs -->
+<div class="fab-group" id="fabGroup">
+    <button class="fab fab-top" onclick="scrollToTop()" title="回到顶部">↑</button>
+    <button class="fab fab-import" onclick="showImportPanel()" title="导入数据" style="background:linear-gradient(135deg,#22c55e,#16a34a);color:white;box-shadow:0 8px 24px rgba(34,197,94,.3)">📥</button>
+    <button class="fab fab-export" onclick="showExportPanel()" title="导出数据">📤</button>
+</div>
+
+<!-- Pay Modal -->
+<div class="modal-overlay" id="payModal">
+    <div class="modal">
+        <div class="modal-handle"></div>
+        <div class="modal-header"><div class="modal-title">💰 车辆缴费</div></div>
+        <div class="modal-body" id="payBody"></div>
+    </div>
+</div>
+
+<!-- Export Panel -->
+<div class="export-overlay" id="exportPanel">
+    <div class="export-panel">
+        <div class="export-header">
+            <div class="export-title">📤 导出数据</div>
+            <div class="export-sub" id="exportCount">共 0 条记录</div>
+        </div>
+        <div class="export-body">
+            <div class="export-option" onclick="exportCSV()">
+                <div class="export-icon csv">📊</div>
+                <div><div class="export-opt-title">导出 CSV</div><div class="export-opt-desc">Excel / WPS 可直接打开</div></div>
+            </div>
+            <div class="export-option" onclick="exportJSON()">
+                <div class="export-icon json">{ }</div>
+                <div><div class="export-opt-title">导出 JSON</div><div class="export-opt-desc">结构化数据，便于程序处理</div></div>
+            </div>
+            <div class="export-option" onclick="printList()">
+                <div class="export-icon print">🖨️</div>
+                <div><div class="export-opt-title">打印列表</div><div class="export-opt-desc">展开所有卡片并打印</div></div>
+            </div>
+        </div>
+        <button class="export-cancel" onclick="closeExportPanel()">取消</button>
+    </div>
+</div>
+
+<!-- Import Panel -->
+<div class="export-overlay" id="importPanel">
+    <div class="export-panel">
+        <div class="export-header">
+            <div class="export-title">📥 导入数据</div>
+            <div class="export-sub" id="importInfo">支持 CSV / JSON 格式</div>
+        </div>
+        <div class="export-body">
+            <div class="export-option" onclick="document.getElementById('importFileCSV').click()" style="border-color:rgba(34,197,94,.15)">
+                <div class="export-icon csv">📊</div>
+                <div><div class="export-opt-title">导入 CSV</div><div class="export-opt-desc">从 Excel / WPS 导出的 CSV 文件</div></div>
+                <input type="file" id="importFileCSV" accept=".csv,text/csv" style="display:none" onchange="handleImportCSV(this)">
+            </div>
+            <div class="export-option" onclick="document.getElementById('importFileJSON').click()" style="border-color:rgba(59,130,246,.15)">
+                <div class="export-icon json">{ }</div>
+                <div><div class="export-opt-title">导入 JSON</div><div class="export-opt-desc">从本系统导出的 JSON 文件</div></div>
+                <input type="file" id="importFileJSON" accept=".json,application/json" style="display:none" onchange="handleImportJSON(this)">
+            </div>
+            <div class="export-option" onclick="resetData()" style="border-color:rgba(220,38,38,.15)">
+                <div class="export-icon" style="background:rgba(220,38,38,.1)">🔄</div>
+                <div><div class="export-opt-title">重置数据</div><div class="export-opt-desc">恢复为系统默认数据</div></div>
+            </div>
+        </div>
+        <button class="export-cancel" onclick="closeImportPanel()">取消</button>
+    </div>
+</div>
+
+<!-- Receipt -->
+<div class="receipt-overlay" id="receiptOverlay">
+    <div class="receipt" id="receiptCard"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Keyboard hints -->
+<div class="kbd-hint">
+    <span><kbd>/</kbd> 搜索</span>
+    <span><kbd>↑↓</kbd> 选择</span>
+    <span><kbd>↵</kbd> 展开</span>
+    <span><kbd>Esc</kbd> 返回</span>
+</div>
+
+<script>
+// ===== Default Data =====
+const defaultCarData=[
+{name:"董事长",phone:"",plate:"青AP7162",note:"",type:"公司"},
+{name:"马斌全（总经理）",phone:"13139043131",plate:"青A00280",note:"",type:"公司"},
+{name:"马秀超（财务总监）",phone:"",plate:"青A1A535",note:"",type:"公司"},
+{name:"商务车",phone:"",plate:"青A3300U",note:"",type:"公司"},
+{name:"范海燕",phone:"17797115793",plate:"青A68C18",note:"",type:"公司"},
+{name:"桑生刚",phone:"18997085602",plate:"青AHZ639",note:"",type:"社会"},
+{name:"杨建国",phone:"13909715949",plate:"青A6530B",note:"",type:"公司"},
+{name:"杨丙兴",phone:"18797083037",plate:"青AEC681",note:"",type:"社会"},
+{name:"马良昕",phone:"13734686735",plate:"青AMY275",note:"",type:"社会"},
+{name:"马    蓉",phone:"19814249727",plate:"青B6Q399",note:"",type:"社会"},
+{name:"韩晓英",phone:"15202559457",plate:"青BY2651",note:"",type:"社会"},
+{name:"马秀花",phone:"13299167320",plate:"青AFG439",note:"",type:"社会"},
+{name:"赵善帅",phone:"17697237365",plate:"青AGB705",note:"",type:"公司"},
+{name:"多杰尖措",phone:"15109740090",plate:"青EG3823",note:"",type:"公司"},
+{name:"郑文岩",phone:"13139105494",plate:"青C56168",note:"",type:"公司"},
+{name:"马永贵",phone:"18309745586",plate:"青AVH115",note:"",type:"社会"},
+{name:"买金萍",phone:"18997027092",plate:"青A553G8",note:"政府人员车辆",type:"公司"},
+{name:"马志龙",phone:"18997046786",plate:"青AF75261",note:"",type:"社会"},
+{name:"沈中华",phone:"17697314662",plate:"青A3C681",note:"",type:"社会"},
+{name:"马它黑",phone:"13086263251",plate:"青ANK182",note:"",type:"社会"},
+{name:"祁宝森",phone:"15597259048",plate:"青AKN963",note:"",type:"社会"},
+{name:"金  来",phone:"13997249394",plate:"青APR796",note:"",type:"社会"},
+{name:"马玉强",phone:"13139090836",plate:"青AMY215",note:"",type:"社会"},
+{name:"才  吉",phone:"13709726561",plate:"青A9U796",note:"",type:"社会"},
+{name:"刘玉才",phone:"13997219989",plate:"甘N35136",note:"",type:"社会"},
+{name:"王惠芳",phone:"13007779028",plate:"青A0R687",note:"",type:"社会"},
+{name:"雪域龙英",phone:"13897449733",plate:"青AMY185",note:"",type:"社会"},
+{name:"马   俊",phone:"17309715206",plate:"青A9A993",note:"外面商户",type:"社会"},
+{name:"张立峰",phone:"17797226416",plate:"青A8Z911",note:"",type:"社会"},
+{name:"李生辉",phone:"18997167484",plate:"青AVL082",note:"",type:"社会"},
+{name:"马继才",phone:"13997168706",plate:"青ABP168 青A5718K",note:"",type:"社会"},
+{name:"马斌",phone:"13389795757",plate:"青AZK873",note:"社会车辆",type:"社会"},
+{name:"马金虎",phone:"13997385618",plate:"青AJV885",note:"社会车辆",type:"社会"},
+{name:"扎西才旦",phone:"15390630000",plate:"甘P6G337",note:"",type:"社会"},
+{name:"马克峰",phone:"18197046268",plate:"甘N61B51",note:"",type:"社会"},
+{name:"宋席梅",phone:"15297096160",plate:"青AZS868",note:"",type:"社会"},
+{name:"范国礼",phone:"13997038882",plate:"青AR8006",note:"",type:"商户"},
+{name:"候生奎",phone:"13897000091",plate:"青C11733",note:"",type:"商户"},
+{name:"马     燕",phone:"18697230000",plate:"青A00375",note:"",type:"商户"},
+{name:"祁永红",phone:"18697191681",plate:"青AXF852",note:"",type:"商户"},
+{name:"萨拉丁",phone:"15597025530",plate:"鲁B7A9H9",note:"",type:"商户"},
+{name:"马爱霞",phone:"15809713988",plate:"青AMA106",note:"",type:"商户"},
+{name:"段发忠",phone:"18609782378",plate:"青AX2916",note:"",type:"商户"},
+{name:"马宋吉克",phone:"13897045123",plate:"甘A·Q3K70",note:"",type:"商户"},
+{name:"马宝玉",phone:"17697106187",plate:"青AF43434",note:"",type:"商户"},
+{name:"马尚文",phone:"15500524777",plate:"青A0866D",note:"",type:"商户"},
+{name:"赵金合",phone:"15993112182",plate:"豫V291BR",note:"",type:"商户"},
+{name:"王奎武",phone:"13897642858",plate:"青AEL222",note:"",type:"商户"},
+{name:"马太贤",phone:"13086225342",plate:"青A607D7",note:"",type:"商户"},
+{name:"杨元辉",phone:"13997147034",plate:"豫AC2P86",note:"",type:"商户"},
+{name:"冶廷龙",phone:"18797115643",plate:"青A7966H 青A5678R",note:"外面商户",type:"商户"},
+{name:"邢严寿",phone:"15897191150",plate:"鄂A90G72",note:"",type:"商户"},
+{name:"刘元林",phone:"13099749568",plate:"甘NCR626",note:"",type:"商户"},
+{name:"冶建强",phone:"18197178636",plate:"青A6U969 青A20L23 青A34129",note:"",type:"商户"},
+{name:"钟小刚",phone:"13897280770",plate:"青AH3369",note:"",type:"商户"},
+{name:"李凤英",phone:"13086299803",plate:"青AA4821",note:"",type:"商户"},
+{name:"颜顺春",phone:"15997074677",plate:"青A27S86",note:"",type:"社会"},
+{name:"余本超",phone:"18809710285",plate:"青A72P68",note:"",type:"商户"},
+{name:"王建功",phone:"18609718359",plate:"青A05076 青A00375",note:"",type:"商户"},
+{name:"黄允",phone:"18997095275",plate:"青AVM616",note:"8楼租户",type:"商户"},
+{name:"马维龙",phone:"13997269728",plate:"青ARW859",note:"",type:"商户"},
+{name:"李银贤",phone:"13109715575",plate:"青OA2803",note:"",type:"商户"},
+{name:"马维龙",phone:"13997269728",plate:"青RW859",note:"",type:"商户"},
+{name:"-",phone:"",plate:"青AAD296",note:"律师",type:"特殊车辆"},
+{name:"-",phone:"",plate:"青A00421",note:"马总朋友",type:"特殊车辆"},
+{name:"-",phone:"",plate:"青AML177",note:"马院",type:"特殊车辆"},
+{name:"-",phone:"",plate:"青A00664",note:"蔡总",type:"特殊车辆"},
+{name:"-",phone:"",plate:"青A6H096",note:"马总朋友",type:"特殊车辆"},
+{name:"-",phone:"",plate:"青A00505",note:"董事长朋友马院",type:"特殊车辆"},
+{name:"-",phone:"",plate:"青0A5756",note:"董事长朋友",type:"特殊车辆"},
+{name:"张玉良",phone:"15297197711",plate:"青A710H8",note:"玉树冰川藏宝强茂有限公司",type:"商户"},
+{name:"张玉良",phone:"15297197711",plate:"青A95N32",note:"玉树冰川藏宝强茂有限公司",type:"商户"},
+{name:"陆长",phone:"15928962253",plate:"川J5771P",note:"8楼",type:"商户"},
+{name:"刘福安",phone:"13086261525",plate:"青AL268D",note:"",type:"社会"},
+{name:"沈金忠",phone:"15297192232",plate:"青B3U810",note:"员工",type:"公司"},
+{name:"刘愿望",phone:"13850721117",plate:"闽C9829A",note:"",type:"商户"},
+{name:"徐东红",phone:"18997071077",plate:"青AVM999",note:"",type:"商户"},
+{name:"赵永强",phone:"17513625814",plate:"豫V291BR",note:"",type:"商户"},
+{name:"张海良",phone:"15297292270",plate:"青A80G96",note:"中厨",type:"公司"},
+{name:"沈金鹏",phone:"17897083221",plate:"青A9Z883",note:"中厨",type:"公司"},
+{name:"张发寿",phone:"15597673102",plate:"川G5H8V8",note:"中厨",type:"公司"},
+{name:"马忠杰",phone:"18109791918",plate:"青A2F153",note:"",type:"社会"},
+{name:"李洪安",phone:"15709813262",plate:"青A.70648",note:"",type:"社会"},
+{name:"祁先文",phone:"15549755167",plate:"青BQ8228",note:"",type:"商户"},
+{name:"刘立滨",phone:"17797086672",plate:"川GMN012",note:"",type:"社会"}
+];
+
+// ===== Dynamic Data (load from localStorage or use defaults) =====
+let carData = loadCarData();
+
+function loadCarData(){
+    try{
+        const saved = localStorage.getItem('haidiye_cars');
+        if(saved){
+            const parsed = JSON.parse(saved);
+            if(Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+    }catch(e){}
+    return [...defaultCarData];
+}
+function saveCarData(){
+    try{localStorage.setItem('haidiye_cars', JSON.stringify(carData))}catch(e){showToast('保存失败')}
+}
+
+// ===== Grouping =====
+function group(data){
+    const map=new Map();
+    data.forEach(item=>{
+        const key=`${item.name}|${item.phone}`;
+        if(map.has(key)){const e=map.get(key);e.plates.push(item.plate);if(item.note&&!e.notes.includes(item.note))e.notes.push(item.note);e.multi=true}
+        else map.set(key,{...item,plates:[item.plate],notes:item.note?[item.note]:[],multi:false})
+    });
+    return Array.from(map.values());
+}
+
+const typeOrder={'公司':0,'商户':1,'社会':2,'特殊车辆':3};
+function sortByType(data){return [...data].sort((a,b)=>{const d=(typeOrder[a.type]??9)-(typeOrder[b.type]??9);if(d!==0)return d;return a.name.localeCompare(b.name,'zh')})}
+
+// ===== State =====
+let currentFilter='all',sortAsc=true,expandedId=null,isSearching=false,batchMode=false,batchSelected=new Set(),selectedIndex=-1;
+const amounts={'公司':200,'商户':300,'社会':400,'特殊车辆':0};
+
+// ===== localStorage =====
+function loadState(){
+    try{
+        const s=JSON.parse(localStorage.getItem('haidiye_state')||'{}');
+        if(s.recentSearches)recentSearches=s.recentSearches;
+        if(s.paymentLog)paymentLog=s.paymentLog;
+    }catch(e){}
+}
+function saveState(){
+    try{localStorage.setItem('haidiye_state',JSON.stringify({recentSearches,paymentLog}))}catch(e){}
+}
+let recentSearches=[];
+let paymentLog=[];
+
+function addRecentSearch(kw){
+    if(!kw||kw.length<2)return;
+    recentSearches=recentSearches.filter(s=>s!==kw);
+    recentSearches.unshift(kw);
+    if(recentSearches.length>5)recentSearches.pop();
+    saveState();
+    renderRecentSearches();
+}
+function renderRecentSearches(){
+    const el=document.getElementById('recentSearches');
+    if(!recentSearches.length){el.innerHTML='';return}
+    el.innerHTML=`<div class="recent-label">最近搜索</div>`+recentSearches.map(s=>`<div class="recent-tag" onclick="doRecentSearch('${s.replace(/'/g,"\\'")}')">${s}</div>`).join('');
+}
+function doRecentSearch(kw){document.getElementById('searchInput').value=kw;enterSearchMode();renderList()}
+
+// ===== Init =====
+document.addEventListener('DOMContentLoaded',()=>{
+    loadState();startClock();renderStats();renderRecentSearches();
+    document.getElementById('searchInput').addEventListener('input',onSearchInput);
+    document.addEventListener('keydown',onKeyDown);
+    // Close expanded card on outside click
+    document.addEventListener('click',e=>{
+        if(!e.target.closest('.card')&&!e.target.closest('.modal-overlay')&&!e.target.closest('.export-overlay')&&!e.target.closest('.receipt-overlay')){
+            if(expandedId){expandedId=null;renderList()}
+        }
+    });
+    // Touch swipe to dismiss
+    let touchStartY=0;
+    document.addEventListener('touchstart',e=>{touchStartY=e.touches[0].clientY},{passive:true});
+    document.addEventListener('touchend',e=>{
+        const dy=e.changedTouches[0].clientY-touchStartY;
+        if(dy>80){
+            const modal=document.querySelector('.modal-overlay.show,.export-overlay.show,.receipt-overlay.show');
+            if(modal){modal.classList.remove('show');return}
+            if(isSearching&&!document.getElementById('searchInput').value)exitSearchMode();
+        }
+    },{passive:true});
+});
+
+// ===== Keyboard Shortcuts =====
+function onKeyDown(e){
+    // / = focus search
+    if(e.key==='/'&&!e.ctrlKey&&!e.metaKey&&document.activeElement.tagName!=='INPUT'){e.preventDefault();document.getElementById('searchInput').focus();if(!isSearching)enterSearchMode()}
+    // Esc = go back
+    if(e.key==='Escape'){
+        const receipt=document.querySelector('.receipt-overlay.show');
+        if(receipt){closeReceipt();return}
+        const pay=document.querySelector('.modal-overlay.show');
+        if(pay){pay.classList.remove('show');return}
+        const exp=document.querySelector('.export-overlay.show');
+        if(exp){closeExportPanel();return}
+        if(batchMode){toggleBatchMode();return}
+        if(isSearching)exitSearchMode();
+        document.getElementById('searchInput').blur();
+    }
+    // Alt+S = toggle sort
+    if(e.altKey&&e.key==='s'){e.preventDefault();if(isSearching)toggleSort()}
+    // Arrow keys = navigate results
+    if(isSearching&&(e.key==='ArrowDown'||e.key==='ArrowUp')){
+        e.preventDefault();
+        const cards=document.querySelectorAll('#list .card');
+        if(!cards.length)return;
+        if(e.key==='ArrowDown')selectedIndex=Math.min(selectedIndex+1,cards.length-1);
+        else selectedIndex=Math.max(selectedIndex-1,0);
+        highlightSelected(cards);
+    }
+    // Enter = expand selected
+    if(e.key==='Enter'&&isSearching&&selectedIndex>=0){
+        e.preventDefault();
+        const cards=document.querySelectorAll('#list .card');
+        if(cards[selectedIndex]){
+            const main=cards[selectedIndex].querySelector('.card-main');
+            if(main)main.click();
+        }
+    }
+}
+
+// ===== Clock =====
+function startClock(){
+    function tick(){
+        const now=new Date();
+        const h=String(now.getHours()).padStart(2,'0'),m=String(now.getMinutes()).padStart(2,'0'),s=String(now.getSeconds()).padStart(2,'0');
+        document.getElementById('clockTime').textContent=`${h}:${m}:${s}`;
+        const days=['周日','周一','周二','周三','周四','周五','周六'];
+        const mo=now.getMonth()+1,da=now.getDate();
+        document.getElementById('clockDate').textContent=`${now.getFullYear()}年${mo}月${da}日 ${days[now.getDay()]}`;
+    }
+    tick();setInterval(tick,1000);
+}
+
+// ===== Stats =====
+function renderStats(){
+    const g=group(carData);
+    const c={all:g.length,'公司':0,'商户':0,'社会':0,'特殊车辆':0};
+    g.forEach(i=>c[i.type]=(c[i.type]||0)+1);
+    animateCounter('statTotal',c.all);
+    animateCounter('statCompany',c['公司']);
+    animateCounter('statMerchant',c['商户']);
+    animateCounter('statSocial',c['社会']);
+    document.getElementById('tagCompany').textContent=c['公司'];
+    document.getElementById('tagMerchant').textContent=c['商户'];
+    document.getElementById('tagSocial').textContent=c['社会'];
+    document.getElementById('tagSpecial').textContent=c['特殊车辆']||0;
+}
+function animateCounter(id,target){
+    const el=document.getElementById(id);
+    const start=parseInt(el.textContent)||0;
+    if(start===target){el.textContent=target;return}
+    const duration=800,startTime=performance.now();
+    function update(now){
+        const p=Math.min((now-startTime)/duration,1);
+        const ease=1-Math.pow(1-p,3);
+        el.textContent=Math.round(start+(target-start)*ease);
+        if(p<1)requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+}
+
+
+
+// ===== Search =====
+let searchTimeout;
+function onSearchInput(){
+    const val=document.getElementById('searchInput').value.trim();
+    document.getElementById('searchClear').classList.toggle('show',val.length>0);
+    if(val.length>0&&!isSearching)enterSearchMode();
+    selectedIndex=-1;
+    clearTimeout(searchTimeout);
+    searchTimeout=setTimeout(()=>renderList(),150);
+}
+function enterSearchMode(){
+    isSearching=true;
+    document.getElementById('hero').classList.add('searching');
+    document.getElementById('resultsArea').classList.add('show');
+    document.getElementById('fabGroup').classList.add('show');
+    renderFilterBar();
+}
+function exitSearchMode(){
+    isSearching=false;currentFilter='all';batchMode=false;batchSelected.clear();selectedIndex=-1;
+    document.getElementById('hero').classList.remove('searching');
+    document.getElementById('resultsArea').classList.remove('show');
+    document.getElementById('fabGroup').classList.remove('show');
+    document.getElementById('searchInput').value='';
+    document.getElementById('searchClear').classList.remove('show');
+    document.getElementById('list').classList.remove('batch-mode');
+    expandedId=null;
+}
+function goHome(){exitSearchMode()}
+function quickFilter(type){currentFilter=type;enterSearchMode();renderFilterBar();renderList();document.getElementById('searchInput').focus()}
+function clearSearch(){
+    const kw=document.getElementById('searchInput').value.trim();
+    if(kw)addRecentSearch(kw);
+    if(currentFilter!=='all'){document.getElementById('searchInput').value='';document.getElementById('searchClear').classList.remove('show');renderList()}
+    else exitSearchMode();
+}
+function highlightSelected(cards){
+    cards.forEach((c,i)=>{
+        c.classList.toggle('card-keyboard-selected',i===selectedIndex);
+        if(i===selectedIndex)c.scrollIntoView({block:'nearest',behavior:'smooth'});
+    });
+}
+function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'})}
+
+// ===== Batch Mode =====
+function toggleBatchMode(){
+    batchMode=!batchMode;
+    batchSelected.clear();
+    document.getElementById('batchBtn').classList.toggle('active',batchMode);
+    document.getElementById('list').classList.toggle('batch-mode',batchMode);
+    renderList();
+}
+function toggleBatchItem(id){
+    if(batchSelected.has(id))batchSelected.delete(id);else batchSelected.add(id);
+    renderList();
+}
+function batchPayAll(){
+    if(!batchSelected.size)return showToast('请先选择车辆');
+    showToast(`已选中 ${batchSelected.size} 辆车辆，功能开发中`);
+}
+
+// ===== Filter Bar =====
+function renderFilterBar(){
+    const g=group(carData);
+    const c={all:g.length,'公司':0,'商户':0,'社会':0,'特殊车辆':0};
+    g.forEach(i=>c[i.type]=(c[i.type]||0)+1);
+    const types=[{key:'all',label:'全部'},{key:'公司',label:'公司'},{key:'商户',label:'商户'},{key:'社会',label:'社会'},{key:'特殊车辆',label:'特殊车辆'}];
+    document.getElementById('filterBar').innerHTML=
+        `<button class="filter-back" onclick="goHome()" title="返回首页 (Esc)">←</button>`+
+        types.map(t=>`<div class="filter-chip ${currentFilter===t.key?'active':''}" onclick="setFilter('${t.key}')">${t.label}<span class="chip-num">${c[t.key]||0}</span></div>`).join('');
+}
+function setFilter(f){currentFilter=f;expandedId=null;batchSelected.clear();selectedIndex=-1;renderFilterBar();renderList()}
+function toggleSort(){sortAsc=!sortAsc;renderList();showToast(sortAsc?'按名称 A→Z':'按名称 Z→A')}
+
+// ===== Highlight =====
+function hl(text,kw){if(!kw||!text)return text;const esc=kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');return text.replace(new RegExp(`(${esc})`,'gi'),'<mark>$1</mark>')}
+
+function checkMatch(item,kw){
+    if(!kw)return{name:false,phone:false,plate:false,note:false,type:false,has:true};
+    const plateMatch=item.plates.join(' ').toLowerCase().includes(kw);
+    if(item.type==='特殊车辆')return{name:false,phone:false,plate:plateMatch,note:false,type:false,has:plateMatch};
+    const nameMatch=item.name.toLowerCase().includes(kw);
+    const phoneMatch=item.phone&&item.phone.replace(/[\s\-()（）]/g,'').includes(kw.replace(/[\s\-()（）]/g,''));
+    const noteMatch=item.notes.join(' ').toLowerCase().includes(kw);
+    const typeMatch=item.type.includes(kw);
+    return{name:nameMatch,phone:phoneMatch,plate:plateMatch,note:noteMatch,type:typeMatch,has:nameMatch||phoneMatch||plateMatch||noteMatch||typeMatch};
+}
+
+// ===== Render List =====
+function renderList(){
+    const kw=document.getElementById('searchInput').value.trim().toLowerCase();
+    let data=sortByType(group(carData));
+    if(currentFilter!=='all')data=data.filter(i=>i.type===currentFilter);
+    if(kw)data=data.filter(i=>checkMatch(i,kw).has);
+    if(!sortAsc)data.reverse();
+
+    const list=document.getElementById('list'),empty=document.getElementById('empty'),info=document.getElementById('resultsInfo'),label=document.getElementById('filterLabel');
+    info.innerHTML=`共 <span>${data.length}</span> 条记录`;
+    label.textContent=currentFilter==='all'?'':currentFilter;
+    if(!data.length){list.innerHTML='';empty.classList.add('show');return}
+    empty.classList.remove('show');
+
+    const typeMap={'公司':'company','商户':'merchant','社会':'social','特殊车辆':'special'};
+    const typeIcon={'公司':'公','商户':'商','社会':'社','特殊车辆':'特'};
+    const typeEmoji={'公司':'🏢','商户':'🏪','社会':'🚗','特殊车辆':'⭐'};
+
+    list.className=batchMode?'batch-mode':'';
+    list.innerHTML=data.map((item,idx)=>{
+        const id=`${item.name}-${item.phone}-${item.plates[0]}`;
+        const isOpen=expandedId===id;
+        const m=checkMatch(item,kw);
+        const isBatch=batchSelected.has(id);
+
+        let matchBadges='';
+        if(kw&&m.has){
+            const b=[];
+            if(m.plate)b.push('<span class="match-badge plate-match">🔢 车牌</span>');
+            if(m.name)b.push('<span class="match-badge name-match">👤 姓名</span>');
+            if(m.phone)b.push('<span class="match-badge phone-match">📞 电话</span>');
+            if(m.note)b.push('<span class="match-badge note-match">📝 备注</span>');
+            if(m.type)b.push('<span class="match-badge type-match">🏷️ 类型</span>');
+            matchBadges=`<div class="match-badges">${b.join('')}</div>`;
+        }
+
+        const displayPlates=(kw&&m.plate)?item.plates.filter(p=>p.toLowerCase().includes(kw)):item.plates;
+        const platesHtml=displayPlates.map(p=>`<span class="plate-tag" onclick="event.stopPropagation();copyText('${p}')">${hl(p,kw)}</span>`).join('');
+        const detailPlatesHtml=displayPlates.map(p=>`<span class="detail-plate" onclick="copyText('${p}')">${hl(p,kw)}</span>`).join('');
+        const escapedId=id.replace(/'/g,"\\'");
+
+        const phoneHtml=item.phone?`<div class="detail-row"><div class="detail-label">电话</div><div class="detail-value"><a href="tel:${item.phone}" class="detail-phone">${hl(item.phone,kw)}</a></div></div>`:'';
+
+        const animDelay=Math.min(idx*30,300);
+
+        return`<div class="card ${isOpen?'expanded':''} ${isBatch?'batch-selected':''}" style="animation:cardIn .4s ${animDelay}ms both cubic-bezier(.4,0,.2,1)">
+            <div class="card-main" onclick="${batchMode?`toggleBatchItem('${escapedId}')`:`toggleCard('${escapedId}')`}">
+                ${batchMode?`<div class="batch-check ${isBatch?'checked':''}" onclick="event.stopPropagation();toggleBatchItem('${escapedId}')">${isBatch?'✓':''}</div>`:''}
+                <div class="card-avatar ${typeMap[item.type]}">${typeEmoji[item.type]||typeIcon[item.type]}</div>
+                <div class="card-body">
+                    <div class="card-top">
+                        <div class="card-name">${hl(item.name,kw)}</div>
+                        <span class="badge ${typeMap[item.type]}">${item.type}</span>
+                    </div>
+                    <div class="card-plate-row">
+                        ${platesHtml}
+                        ${item.multi?`<span class="multi-badge">${kw?`${displayPlates.length}/${item.plates.length}`:item.plates.length}辆</span>`:''}
+                    </div>
+                    ${item.phone?`<div class="card-phone-row"><span class="card-phone-icon">📞</span><a href="tel:${item.phone}" class="detail-phone" onclick="event.stopPropagation()">${hl(item.phone,kw)}</a></div>`:''}
+                    ${matchBadges}
+                </div>
+                ${!batchMode?`<div class="card-arrow">▾</div>`:''}
+            </div>
+            <div class="card-detail">
+                <div class="card-detail-inner">
+                    ${phoneHtml}
+                    <div class="detail-row">
+                        <div class="detail-label">车牌</div>
+                        <div class="detail-value"><div class="detail-plates">${detailPlatesHtml}</div></div>
+                    </div>
+                    ${item.notes.length?`<div class="detail-row"><div class="detail-label">备注</div><div class="detail-value"><span class="detail-note">${item.notes.join('、')}</span></div></div>`:''}
+                    <div class="detail-actions">
+                        ${item.type==='特殊车辆'
+                            ?`<button class="detail-btn btn-free" onclick="event.stopPropagation();freePass('${escapedId}')">✨ 免费放行</button>`
+                            :`<button class="detail-btn btn-pay" onclick="event.stopPropagation();openPay('${escapedId}','${item.type}','${item.name.replace(/'/g,"\\'")}','${item.phone}','${item.plates[0]}','${(item.notes[0]||'').replace(/'/g,"\\'")}')">💰 立即缴费</button>`}
+                        ${item.phone?`<button class="detail-btn btn-call" onclick="event.stopPropagation()" href="tel:${item.phone}" style="flex:0.6">📞 拨打</button>`:''}
+                        <button class="detail-btn btn-export-single" onclick="event.stopPropagation();exportSingle('${escapedId}')">📋 复制</button>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// Card enter animation
+const styleSheet=document.createElement('style');
+styleSheet.textContent=`@keyframes cardIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}`;
+document.head.appendChild(styleSheet);
+
+function toggleCard(id){expandedId=expandedId===id?null:id;renderList()}
+
+function freePass(id){
+    showToast('✨ 已免费放行');
+    const item=group(carData).find(i=>`${i.name}-${i.phone}-${i.plates[0]}`===id);
+    if(item){paymentLog.push({type:'免费放行',name:item.name,plate:item.plates[0],time:new Date().toISOString(),amount:0});saveState()}
+}
+
+// ===== Payment =====
+function openPay(id,type,name,phone,plate,note){
+    const defAmt=amounts[type]||0;
+    const presets=type==='公司'?[200,400,600,3600]:type==='商户'?[300,600,900,3600]:[400,800,1200,3600];
+    document.getElementById('payBody').innerHTML=`
+        <div class="modal-info-card">
+            <div class="modal-info-row"><span class="modal-info-label">类型</span><span class="modal-info-value">${type}</span></div>
+            <div class="modal-info-row"><span class="modal-info-label">姓名</span><span class="modal-info-value">${name}</span></div>
+            ${phone?`<div class="modal-info-row"><span class="modal-info-label">电话</span><span class="modal-info-value">${phone}</span></div>`:''}
+            ${note?`<div class="modal-info-row"><span class="modal-info-label">备注</span><span class="modal-info-value">${note}</span></div>`:''}
+        </div>
+        <div class="modal-plate-big">${plate}</div>
+        <div class="pay-methods">
+            <div class="pay-method selected" onclick="selPay(this,'qr')"><div class="pay-icon">📱</div><div>扫码支付</div></div>
+            <div class="pay-method" onclick="selPay(this,'cash')"><div class="pay-icon">💵</div><div>现金支付</div></div>
+            <div class="pay-method" onclick="selPay(this,'wechat')"><div class="pay-icon">💚</div><div>微信支付</div></div>
+        </div>
+        <div class="amount-section">
+            <div class="amount-row">
+                <button class="amount-adj" onclick="adjAmt(-100)">−</button>
+                <div class="amount-value"><span class="currency">¥</span><span id="amtVal">${defAmt}</span></div>
+                <button class="amount-adj" onclick="adjAmt(100)">+</button>
+            </div>
+            <div class="amount-hint" id="amtHint">${calcMonths(type,defAmt)}</div>
+            <div class="amount-presets">${presets.map(p=>`<span class="amount-preset ${p===defAmt?'active':''}" onclick="setAmt(${p},'${type}')">¥${p}</span>`).join('')}</div>
+        </div>
+        <button class="modal-confirm" onclick="doPay('${type}','${name.replace(/'/g,"\\'")}','${phone}','${plate}','${note.replace(/'/g,"\\'")}')">确认缴费</button>`;
+    window._payMethod='qr';window._payAmt=defAmt;window._payType=type;
+    document.getElementById('payModal').classList.add('show');
+}
+function selPay(el,method){el.parentElement.querySelectorAll('.pay-method').forEach(m=>m.classList.remove('selected'));el.classList.add('selected');window._payMethod=method}
+function adjAmt(delta){let v=window._payAmt+delta;if(window._payType==='特殊车辆')v=0;else v=Math.max(100,Math.min(4800,v));setAmt(v,window._payType)}
+function setAmt(v,type){window._payAmt=v;document.getElementById('amtVal').textContent=v;document.getElementById('amtHint').textContent=calcMonths(type,v);document.querySelectorAll('.amount-preset').forEach(p=>{p.classList.toggle('active',parseInt(p.textContent.replace('¥',''))===v)})}
+function calcMonths(type,amt){if(type==='特殊车辆'||amt===0)return'免费放行';const r={'公司':200,'商户':300,'社会':400}[type]||200;const m=Math.floor(amt/r);if(m>=12){const y=Math.floor(m/12),rm=m%12;return rm?`可续 ${y} 年 ${rm} 个月`:`可续 ${y} 年`}return`可续 ${m} 个月`}
+
+function doPay(type,name,phone,plate,note){
+    const amt=window._payAmt,method=window._payMethod,months=calcMonths(type,amt);
+    const now=new Date();
+    const timeStr=now.toLocaleString('zh-CN');
+    const methodLabel={'qr':'扫码支付','cash':'现金支付','wechat':'微信支付'}[method]||method;
+
+    // Log payment
+    paymentLog.push({type,name,phone,plate,amount:amt,method:methodLabel,months,time:now.toISOString()});
+    saveState();
+
+    document.getElementById('payModal').classList.remove('show');
+    document.getElementById('receiptCard').innerHTML=`
+        <div class="receipt-header"><span class="receipt-check">✅</span><h3>缴费凭证</h3></div>
+        <div class="receipt-body">
+            <div class="receipt-section">
+                <div class="receipt-section-title">车辆信息</div>
+                <div class="receipt-row"><span class="receipt-label">类型</span><span class="receipt-value">${type}</span></div>
+                <div class="receipt-row"><span class="receipt-label">姓名</span><span class="receipt-value">${name}</span></div>
+                ${phone?`<div class="receipt-row"><span class="receipt-label">电话</span><span class="receipt-value">${phone}</span></div>`:''}
+                <div class="receipt-row"><span class="receipt-label">车牌</span><span class="receipt-value" style="font-size:16px;font-weight:800;color:#3b82f6">${plate}</span></div>
+                ${note?`<div class="receipt-row"><span class="receipt-label">备注</span><span class="receipt-value">${note}</span></div>`:''}
+            </div>
+            <div class="receipt-amount">¥ ${amt} 元</div>
+            <div class="receipt-note">${method==='cash'?`现金缴费 ${amt} 元`:`扫码岗亭二维码付款 ${amt} 元`}</div>
+            <div class="receipt-section">
+                <div class="receipt-section-title">缴费详情</div>
+                <div class="receipt-row"><span class="receipt-label">支付方式</span><span class="receipt-value">${methodLabel}</span></div>
+                <div class="receipt-row"><span class="receipt-label">续费时长</span><span class="receipt-value">${months}</span></div>
+                <div class="receipt-row"><span class="receipt-label">状态</span><span class="receipt-value" style="color:#22c55e">✅ 成功</span></div>
+            </div>
+            <div class="receipt-footer">海迪耶国际饭店 · 智慧停车<div class="receipt-time">${timeStr}</div></div>
+        </div>
+        <button class="receipt-close" onclick="closeReceipt()">关闭</button>`;
+    document.getElementById('receiptOverlay').classList.add('show');
+    showToast(`✅ 缴费成功 ¥${amt}（${months}）`);
+}
+document.getElementById('payModal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('show')});
+function closeReceipt(){document.getElementById('receiptOverlay').classList.remove('show')}
+document.getElementById('receiptOverlay').addEventListener('click',function(e){if(e.target===this)closeReceipt()});
+
+// ===== Export =====
+function showExportPanel(){const d=getFilteredData();document.getElementById('exportCount').textContent=`当前筛选共 ${d.length} 条记录`;document.getElementById('exportPanel').classList.add('show')}
+function closeExportPanel(){document.getElementById('exportPanel').classList.remove('show')}
+document.getElementById('exportPanel').addEventListener('click',function(e){if(e.target===this)closeExportPanel()});
+
+function getFilteredData(){
+    const kw=document.getElementById('searchInput').value.trim().toLowerCase();
+    let data=sortByType(group(carData));
+    if(currentFilter!=='all')data=data.filter(i=>i.type===currentFilter);
+    if(kw)data=data.filter(i=>{
+        const p=i.plates.join(' ').toLowerCase();
+        if(i.type==='特殊车辆')return p.includes(kw);
+        const n=i.notes.join(' ').toLowerCase();
+        const ph=i.phone.replace(/[\s\-()（）]/g,'');const kwc=kw.replace(/[\s\-()（）]/g,'');
+        return i.name.toLowerCase().includes(kw)||ph.includes(kwc)||p.includes(kw)||n.includes(kw)||i.type.includes(kw);
+    });
+    return data;
+}
+
+function exportCSV(){
+    const data=getFilteredData();const BOM='\uFEFF';
+    const rows=[['姓名','电话','车牌号','类型','备注']];
+    data.forEach(i=>{i.plates.forEach(p=>{rows.push([`"${i.name.trim()}"`,i.phone,p,i.type,`"${i.notes.join('、')}"`])})});
+    download(BOM+rows.map(r=>r.join(',')).join('\n'),'海迪耶车辆信息.csv','text/csv;charset=utf-8');
+    closeExportPanel();showToast(`✅ 已导出 ${data.length} 条 CSV`);
+}
+function exportJSON(){const d=getFilteredData();download(JSON.stringify(d,null,2),'海迪耶车辆信息.json','application/json');closeExportPanel();showToast(`✅ 已导出 ${d.length} 条 JSON`)}
+function printList(){closeExportPanel();document.querySelectorAll('.card').forEach(c=>c.classList.add('expanded'));setTimeout(()=>window.print(),300)}
+function exportSingle(id){
+    const item=group(carData).find(i=>`${i.name}-${i.phone}-${i.plates[0]}`===id);if(!item)return;
+    copyText([`姓名：${item.name.trim()}`,item.phone?`电话：${item.phone}`:'',`车牌：${item.plates.join(' / ')}`,`类型：${item.type}`,item.notes.length?`备注：${item.notes.join('、')}`:''].filter(Boolean).join('\n'));
+}
+
+// ===== Utils =====
+function download(content,filename,type){const b=new Blob([content],{type});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=filename;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u)}
+function copyText(text){if(navigator.clipboard)navigator.clipboard.writeText(text).then(()=>showToast(`已复制: ${text.split('\n')[0]}`)).catch(()=>fallbackCopy(text));else fallbackCopy(text)}
+function fallbackCopy(t){const ta=document.createElement('textarea');ta.value=t;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');showToast('已复制')}catch(e){showToast('复制失败')}document.body.removeChild(ta)}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._toastTimer);window._toastTimer=setTimeout(()=>t.classList.remove('show'),2400)}
+
+// ===== Import Panel =====
+function showImportPanel(){document.getElementById('importPanel').classList.add('show')}
+function closeImportPanel(){document.getElementById('importPanel').classList.remove('show')}
+document.getElementById('importPanel').addEventListener('click',function(e){if(e.target===this)closeImportPanel()});
+
+function handleImportCSV(input){
+    const file = input.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e){
+        try{
+            const text = e.target.result;
+            const parsed = parseCSV(text);
+            if(!parsed.length){showToast('⚠️ CSV 文件为空或格式错误');closeImportPanel();return}
+            importData(parsed, 'CSV');
+        }catch(err){showToast('❌ 解析 CSV 失败: ' + err.message)}
+    };
+    reader.readAsText(file, 'UTF-8');
+    input.value = '';
+}
+
+function handleImportJSON(input){
+    const file = input.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e){
+        try{
+            const parsed = JSON.parse(e.target.result);
+            if(!Array.isArray(parsed)){showToast('⚠️ JSON 格式错误，需要数组');closeImportPanel();return}
+            const normalized = normalizeImportData(parsed);
+            if(!normalized.length){showToast('⚠️ 未找到有效车辆数据');closeImportPanel();return}
+            importData(normalized, 'JSON');
+        }catch(err){showToast('❌ 解析 JSON 失败: ' + err.message)}
+    };
+    reader.readAsText(file, 'UTF-8');
+    input.value = '';
+}
+
+function parseCSV(text){
+    const lines = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n').filter(l=>l.trim());
+    if(lines.length < 2) return [];
+    // Detect BOM
+    let start = 0;
+    if(lines[0].charCodeAt(0) === 0xFEFF) lines[0] = lines[0].slice(1);
+    // Parse header
+    const header = csvSplitLine(lines[0]).map(h => h.trim().toLowerCase());
+    const nameIdx = header.findIndex(h => /姓\s*名|名称|name/.test(h));
+    const phoneIdx = header.findIndex(h => /电\s*话|手机|phone/.test(h));
+    const plateIdx = header.findIndex(h => /车\s*牌|牌照|plate/.test(h));
+    const typeIdx = header.findIndex(h => /类\s*型|分类|type/.test(h));
+    const noteIdx = header.findIndex(h => /备\s*注|note/.test(h));
+    if(plateIdx < 0){throw new Error('CSV 必须包含"车牌号"列')}
+    const result = [];
+    for(let i = 1; i < lines.length; i++){
+        const cols = csvSplitLine(lines[i]);
+        const plate = (cols[plateIdx]||'').trim();
+        if(!plate) continue;
+        result.push({
+            name: nameIdx >= 0 ? (cols[nameIdx]||'').trim() : '-',
+            phone: phoneIdx >= 0 ? (cols[phoneIdx]||'').trim() : '',
+            plate: plate,
+            type: typeIdx >= 0 ? normalizeType((cols[typeIdx]||'').trim()) : '社会',
+            note: noteIdx >= 0 ? (cols[noteIdx]||'').trim() : ''
+        });
+    }
+    return result;
+}
+
+function csvSplitLine(line){
+    const result = []; let cur = ''; let inQuote = false;
+    for(let i = 0; i < line.length; i++){
+        const ch = line[i];
+        if(inQuote){
+            if(ch === '"'){
+                if(i+1 < line.length && line[i+1] === '"'){cur += '"'; i++}
+                else inQuote = false;
+            } else cur += ch;
+        } else {
+            if(ch === '"') inQuote = true;
+            else if(ch === ','){result.push(cur); cur = ''}
+            else cur += ch;
+        }
+    }
+    result.push(cur);
+    return result;
+}
+
+function normalizeType(t){
+    if(/公\s*司|company|员工/i.test(t)) return '公司';
+    if(/商\s*户|merchant/i.test(t)) return '商户';
+    if(/特\s*殊|special|VIP/i.test(t)) return '特殊车辆';
+    return '社会';
+}
+
+function normalizeImportData(arr){
+    return arr.filter(item => item && item.plate).map(item => ({
+        name: item.name || '-',
+        phone: item.phone || '',
+        plate: item.plate,
+        type: normalizeType(item.type || '社会'),
+        note: item.note || item.notes || ''
+    }));
+}
+
+function importData(newData, format){
+    // Build existing plate set for duplicate detection
+    const existingPlates = new Set(carData.map(c => c.plate.replace(/\s/g,'')));
+    let added = 0, skipped = 0;
+    newData.forEach(item => {
+        const key = item.plate.replace(/\s/g,'');
+        if(existingPlates.has(key)){skipped++}
+        else{
+            carData.push(item);
+            existingPlates.add(key);
+            added++;
+        }
+    });
+    saveCarData();
+    renderStats();
+    renderFilterBar();
+    renderList();
+    closeImportPanel();
+    showToast(`✅ ${format} 导入完成：新增 ${added} 条${skipped ? `，跳过 ${skipped} 条重复` : ''}`);
+}
+
+function resetData(){
+    if(!confirm('确定要重置为系统默认数据？\n所有自定义修改将丢失！')) return;
+    carData = [...defaultCarData];
+    saveCarData();
+    renderStats();
+    renderFilterBar();
+    renderList();
+    closeImportPanel();
+    showToast('🔄 数据已重置为默认');
+}
+
+// ===== FAB Import Style =====
+const fabStyle = document.createElement('style');
+fabStyle.textContent = `.fab-import:active{transform:scale(.88)}.fab-import:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(34,197,94,.4)}`;
+document.head.appendChild(fabStyle);
+
+// Prevent double-tap zoom
+let lastTap=0;
+document.addEventListener('touchend',e=>{const now=Date.now();if(now-lastTap<300)e.preventDefault();lastTap=now},false);
+</script>
+
+<script>
+// PWA Service Worker
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').catch(function(){});
+}
+var _deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();_deferredPrompt=e;_showInstall()});
+window.addEventListener('appinstalled',function(){_deferredPrompt=null;var b=document.getElementById('_installB');if(b)b.remove()});
+function _showInstall(){
+  if(document.getElementById('_installB'))return;
+  var b=document.createElement('div');b.id='_installB';
+  b.style.cssText='position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,rgba(255,255,255,.1),rgba(255,255,255,.04));backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.12);padding:14px 22px;border-radius:16px;z-index:99999;display:flex;align-items:center;gap:12px;color:#fff;font-size:13px;box-shadow:0 8px 32px rgba(0,0,0,.4);font-family:inherit;max-width:92vw';
+  b.innerHTML='<span style="font-size:24px">📱</span><div style="flex:1"><div style="font-weight:700">安装到手机</div><div style="color:rgba(255,255,255,.5);font-size:11px;margin-top:2px">像App一样使用，支持离线</div></div><button onclick="_doInstall()" style="background:linear-gradient(135deg,#d4a853,#f0d48a);color:#0c1220;border:none;padding:8px 18px;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit">安装</button><button onclick="this.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:18px;padding:0 4px">✕</button>';
+  document.body.appendChild(b);
+}
+function _doInstall(){if(!_deferredPrompt)return;_deferredPrompt.prompt();_deferredPrompt.userChoice.then(function(){_deferredPrompt=null;var b=document.getElementById('_installB');if(b)b.remove()})}
+</script>
+</body>
+</html>

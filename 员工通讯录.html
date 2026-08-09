@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>青海开元大饭店 · 内部通讯录</title>
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="通讯录">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192.svg">
+  <link rel="icon" type="image/svg+xml" href="icons/icon-192.svg">
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #e8d48b;
+      --gold-dark: #a07c2e;
+      --navy: #0f172a;
+      --navy-mid: #1e293b;
+      --cream: #faf8f5;
+      --card: #ffffff;
+      --text: #1a1a2e;
+      --text2: #64748b;
+      --border: #e8e4df;
+      --border2: #f0ece7;
+      --green-bg: #f0fdf4;
+      --green-bd: #bbf7d0;
+      --blue-bg: #eef2ff;
+      --blue-bd: #c7d2fe;
+      --amber-bg: #fef3c7;
+      --amber-bd: #fde68a;
+      --red-bg: #fef2f2;
+      --red-bd: #fecaca;
+      --r: 14px;
+      --rs: 10px;
+      --sh: 0 1px 3px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.03);
+      --sh2: 0 8px 30px rgba(0,0,0,.08);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Noto Sans SC',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--cream);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+    button{font-family:inherit}
+    a{text-decoration:none;color:inherit}
+
+    /* SPLASH */
+    .splash{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#0f172a,#1e293b);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s,visibility .6s}
+    .splash.hide{opacity:0;visibility:hidden;pointer-events:none}
+    .splash-icon{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:0 8px 40px rgba(201,168,76,.25);animation:splashPulse 1.5s ease-in-out infinite}
+    @keyframes splashPulse{0%,100%{transform:scale(1);box-shadow:0 8px 40px rgba(201,168,76,.25)}50%{transform:scale(1.05);box-shadow:0 8px 50px rgba(201,168,76,.35)}}
+    .splash-text{margin-top:20px;color:var(--gold);font-size:13px;letter-spacing:2px;font-weight:500}
+    .splash-sub{margin-top:6px;color:rgba(255,255,255,.3);font-size:11px}
+
+    /* HEADER */
+    .header{background:linear-gradient(135deg,#0f172a,#1e293b 60%,#2d3a4e);position:sticky;top:0;z-index:100;box-shadow:0 4px 30px rgba(0,0,0,.2);border-bottom:1px solid rgba(201,168,76,.12)}
+    .header-inner{max-width:680px;margin:0 auto;padding:20px 20px 16px}
+    .header-brand{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+    .brand-icon{width:46px;height:46px;background:linear-gradient(135deg,var(--gold),var(--gold-light));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 20px rgba(201,168,76,.2);flex-shrink:0;position:relative;overflow:hidden}
+    .brand-icon::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(255,255,255,.12),transparent 40%);animation:brandShine 6s linear infinite}
+    @keyframes brandShine{to{transform:rotate(360deg)}}
+    .brand-text h1{color:#fff;font-size:19px;font-weight:700;letter-spacing:.5px}
+    .brand-sub{color:var(--gold);font-size:11px;font-weight:400;margin-top:2px;letter-spacing:1px}
+    .brand-meta{margin-left:auto;text-align:right;color:#94a3b8;font-size:11px;line-height:1.5}
+    .brand-meta .count{color:var(--gold);font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
+    .search-wrap{position:relative}
+    .search-wrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:#94a3b8;pointer-events:none}
+    .search-wrap input{width:100%;padding:11px 38px 11px 42px;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.07);color:#fff;font-size:14px;outline:none;transition:all .3s;font-family:inherit}
+    .search-wrap input::placeholder{color:rgba(255,255,255,.3)}
+    .search-wrap input:focus{background:rgba(255,255,255,.12);border-color:rgba(201,168,76,.5);box-shadow:0 0 0 3px rgba(201,168,76,.12),0 4px 16px rgba(0,0,0,.1)}
+    .search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:24px;height:24px;border:none;background:rgba(255,255,255,.15);border-radius:50%;color:rgba(255,255,255,.7);cursor:pointer;display:none;align-items:center;justify-content:center;font-size:11px}
+    .search-clear.visible{display:flex}
+
+    /* FILTER */
+    .filter-bar{max-width:680px;margin:0 auto;padding:10px 20px 2px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+    .filter-bar::-webkit-scrollbar{display:none}
+    .filter-chip{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--card);font-size:12px;font-family:inherit;color:var(--text2);cursor:pointer;transition:all .25s;white-space:nowrap;box-shadow:0 1px 2px rgba(0,0,0,.02)}
+    .filter-chip:hover{border-color:var(--gold);color:var(--gold-dark);box-shadow:0 2px 8px rgba(201,168,76,.1);transform:translateY(-1px)}
+    .filter-chip.active{background:linear-gradient(135deg,var(--navy),#1a2744);color:var(--gold);border-color:var(--navy);box-shadow:0 4px 12px rgba(15,23,42,.15)}
+
+    /* STATS */
+    .stats-bar{max-width:680px;margin:0 auto;padding:6px 20px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text2)}
+    .stats-bar .n{font-weight:600;color:var(--gold-dark)}
+    .expand-controls{display:flex;gap:4px}
+    .expand-btn{border:none;background:none;color:var(--text2);font-size:12px;cursor:pointer;padding:4px 10px;border-radius:6px;transition:all .2s;font-family:inherit}
+    .expand-btn:hover{background:rgba(0,0,0,.04);color:var(--gold-dark)}
+
+    /* MAIN */
+    .main{max-width:680px;margin:0 auto;padding:0 16px 120px}
+
+    /* SECTION LABEL */
+    .sec-label{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--gold-dark);font-weight:600;padding:14px 4px 8px;display:flex;align-items:center;gap:8px}
+    .sec-label::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--border),transparent)}
+
+    /* LEADERSHIP */
+    .leader-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:6px}
+    .leader-card{background:linear-gradient(145deg,#0f172a,#1e293b);border-radius:var(--r);padding:18px 10px 14px;color:#fff;display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;box-shadow:var(--sh2);border:1px solid rgba(201,168,76,.15);position:relative;overflow:hidden;transition:all .3s cubic-bezier(.4,0,.2,1)}
+    .leader-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(to right,var(--gold),var(--gold-light),var(--gold));background-size:200% 100%;animation:goldShimmer 3s ease infinite}
+    @keyframes goldShimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+    .leader-card::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.06) 0%,transparent 70%);pointer-events:none}
+    .leader-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.15),0 0 20px rgba(201,168,76,.08);border-color:rgba(201,168,76,.3)}
+    .leader-card.sm{padding:14px 10px 12px}
+    .leader-card.sm .leader-nm{font-size:14px}
+    .leader-nm{font-size:15px;font-weight:700;line-height:1.3;margin-top:6px;position:relative;z-index:1}
+    .leader-ti{font-size:11px;color:var(--gold);opacity:.85;line-height:1.3;position:relative;z-index:1}
+    .leader-cs{display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:8px;width:100%;position:relative;z-index:1}
+    .leader-ext{font-size:11px;background:rgba(201,168,76,.15);color:var(--gold-light);padding:3px 10px;border-radius:6px;display:inline-flex;align-items:center;gap:4px;border:1px solid rgba(201,168,76,.2)}
+    .leader-ext svg{width:11px;height:11px}
+    .leader-ph{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:rgba(255,255,255,.7);padding:4px 10px;border-radius:20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);cursor:pointer;transition:all .2s}
+    .leader-ph:hover{background:rgba(255,255,255,.15);color:#fff}
+    .leader-ph svg{width:12px;height:12px}
+
+    /* DEPT CARD */
+    .dept-card{background:var(--card);border-radius:var(--r);margin-bottom:10px;box-shadow:var(--sh);overflow:hidden;border:1px solid var(--border2);transition:all .3s cubic-bezier(.4,0,.2,1);animation:cardIn .4s ease both}
+    .dept-card:hover{box-shadow:var(--sh2);border-color:#ddd8d0}
+    @keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .dept-hd{display:flex;align-items:center;padding:14px 16px;cursor:pointer;user-select:none;gap:12px;transition:background .15s}
+    .dept-hd:hover{background:rgba(0,0,0,.015)}
+    .dept-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:transform .2s}
+    .dept-card:hover .dept-icon{transform:scale(1.08)}
+    .dept-info{flex:1;min-width:0}
+    .dept-nm{font-weight:600;font-size:14px;display:flex;align-items:center;gap:6px}
+    .dept-sub{font-weight:400;font-size:12px;color:var(--text2)}
+    .dept-badge{font-size:11px;background:var(--cream);color:var(--text2);padding:2px 9px;border-radius:10px;font-weight:500;flex-shrink:0}
+    .dept-arrow{width:18px;height:18px;color:#cbd5e1;transition:transform .3s;flex-shrink:0}
+    .dept-card.open .dept-arrow{transform:rotate(180deg)}
+    .dept-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
+    .dept-card.open .dept-body{max-height:5000px}
+
+    /* DEPT ACTIONS BAR */
+    .dept-actions{padding:0 16px 8px;display:flex;gap:6px;flex-wrap:wrap}
+    .dept-act-btn{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:var(--card);font-size:11px;color:var(--text2);cursor:pointer;transition:all .2s;font-family:inherit}
+    .dept-act-btn:hover{border-color:var(--gold);color:var(--gold-dark);background:#fffdf5}
+    .dept-act-btn svg{width:12px;height:12px}
+    .dept-act-btn.danger:hover{border-color:#fca5a5;color:#dc2626;background:#fef2f2}
+
+    /* EXT CHIPS BAR */
+    .ext-bar{padding:0 16px 10px;display:flex;flex-wrap:wrap;gap:5px}
+    .ext-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:7px;font-size:11px;font-weight:500;cursor:default;font-family:inherit;position:relative;line-height:1.4}
+    .ext-chip.personal{background:var(--blue-bg);border:1px solid var(--blue-bd);color:#4338ca}
+    .ext-chip.facility{background:var(--amber-bg);border:1px solid var(--amber-bd);color:#92400e}
+    .ext-chip svg{width:11px;height:11px;opacity:.5;flex-shrink:0}
+    .ext-chip .ext-lbl{font-weight:600;margin-left:2px}
+    .ext-chip .ext-del{width:16px;height:16px;border:none;background:rgba(0,0,0,.06);border-radius:50%;font-size:10px;cursor:pointer;display:none;align-items:center;justify-content:center;color:inherit;margin-left:2px;padding:0;line-height:1}
+    .ext-chip:hover .ext-del{display:inline-flex}
+
+    /* EMP ITEM — compact horizontal */
+    .emp-item{padding:10px 16px;border-top:1px solid var(--border2);display:flex;align-items:center;gap:10px;transition:all .2s;min-height:48px;position:relative}
+    .emp-item:hover{background:#fcfbf9;padding-left:20px}
+    .emp-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold);opacity:0;transition:opacity .2s;border-radius:0 2px 2px 0}
+    .emp-item:hover::before{opacity:.4}
+    .emp-av{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;flex-shrink:0}
+    .emp-mid{flex:1;min-width:0;display:flex;align-items:center;gap:8px}
+    .emp-name{font-weight:600;font-size:13px;white-space:nowrap}
+    .emp-name.unnamed{color:var(--gold-dark)}
+    .emp-tag{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:500;flex-shrink:0}
+    .tag-emergency{background:var(--red-bg);color:#dc2626}
+    .tag-facility{background:var(--amber-bg);color:#92400e}
+    .tag-leader{background:var(--gold);color:var(--navy)}
+    .emp-pos{font-size:11px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .emp-cs{display:flex;align-items:center;gap:5px;flex-shrink:0}
+    .ph-btn{display:inline-flex;align-items:center;gap:3px;padding:4px 10px;border-radius:16px;border:none;font-size:11px;font-weight:500;cursor:pointer;transition:all .2s;font-family:inherit;white-space:nowrap}
+    .ph-btn svg{width:11px;height:11px}
+    .ph-btn.mobile{background:var(--blue-bg);color:#4338ca;transition:all .25s cubic-bezier(.4,0,.2,1)}
+    .ph-btn.mobile:hover{background:#4338ca;color:#fff;transform:translateY(-2px);box-shadow:0 6px 18px rgba(67,56,202,.3)}
+    .ph-btn.ext{background:var(--green-bg);color:#15803d;border:1px solid var(--green-bd);cursor:default}
+    .ph-btn:active{transform:scale(.97)}
+    .emp-acts{display:flex;gap:3px;flex-shrink:0;opacity:0;transition:opacity .2s}
+    .emp-item:hover .emp-acts{opacity:1}
+    .emp-act{width:22px;height:22px;border:none;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .15s;padding:0}
+    .emp-act.edit{background:var(--blue-bg);color:#4338ca}
+    .emp-act.edit:hover{background:#4338ca;color:#fff}
+    .emp-act.del{background:var(--red-bg);color:#dc2626}
+    .emp-act.del:hover{background:#dc2626;color:#fff}
+
+    /* FACILITY CARD */
+    .fac-card{background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1px solid var(--amber-bd);border-radius:var(--r);margin-bottom:10px;box-shadow:var(--sh);overflow:hidden;transition:all .3s}
+    .fac-card:hover{box-shadow:var(--sh2)}
+    .fac-card.open .dept-body{max-height:5000px}
+    .fac-item{padding:12px 16px;border-top:1px solid rgba(253,230,138,.5);display:flex;align-items:center;gap:12px}
+    .fac-item:hover{background:rgba(255,255,255,.4)}
+    .fac-ic{width:36px;height:36px;border-radius:8px;background:rgba(251,191,36,.12);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+    .fac-info{flex:1}
+    .fac-nm{font-weight:600;font-size:14px}
+    .fac-desc{font-size:11px;color:var(--text2);margin-top:1px}
+    .fac-ext{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:8px;background:rgba(251,191,36,.15);color:#92400e;font-size:13px;font-weight:600;border:1px solid rgba(251,191,36,.3);flex-shrink:0}
+
+    /* EMPTY */
+    .empty{text-align:center;padding:60px 20px}
+    .empty .icon{font-size:48px;margin-bottom:12px;opacity:.5}
+    .empty h3{font-size:16px;margin-bottom:4px}
+    .empty p{font-size:13px;color:var(--text2)}
+
+    /* MODAL */
+    .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:300;opacity:0;visibility:hidden;transition:all .25s;backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center}
+    .modal-overlay.open{opacity:1;visibility:visible}
+    .modal{background:#fff;border-radius:16px;width:360px;max-width:92vw;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);transform:scale(.95) translateY(10px);transition:all .3s cubic-bezier(.4,0,.2,1)}
+    .modal-overlay.open .modal{transform:scale(1) translateY(0)}
+    .modal-hd{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .modal-hd h3{font-size:16px;font-weight:700}
+    .modal-close{width:32px;height:32px;border:none;background:var(--cream);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:16px;transition:all .2s}
+    .modal-close:hover{background:#e2e8f0}
+    .modal-bd{padding:20px}
+    .form-group{margin-bottom:14px}
+    .form-label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px}
+    .form-input{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;outline:none;transition:all .2s;background:var(--card)}
+    .form-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.1)}
+    .form-input::placeholder{color:#c0bfb8}
+    .form-row{display:flex;gap:10px}
+    .form-row .form-group{flex:1}
+    .form-hint{font-size:11px;color:var(--text2);margin-top:4px}
+    .modal-ft{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
+    .btn{padding:8px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit;border:none}
+    .btn-primary{background:var(--navy);color:var(--gold)}
+    .btn-primary:hover{background:var(--navy-mid)}
+    .btn-ghost{background:none;color:var(--text2);border:1px solid var(--border)}
+    .btn-ghost:hover{background:var(--cream)}
+    .btn-danger{background:var(--red-bg);color:#dc2626;border:1px solid var(--red-bd)}
+    .btn-danger:hover{background:#dc2626;color:#fff}
+
+    /* DRAWER */
+    .overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:200;opacity:0;visibility:hidden;transition:all .3s;backdrop-filter:blur(6px)}
+    .overlay.open{opacity:1;visibility:visible}
+    .drawer{position:fixed;top:0;right:0;bottom:0;width:320px;max-width:85vw;background:#fff;z-index:201;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-10px 0 40px rgba(0,0,0,.1)}
+    .drawer.open{transform:translateX(0)}
+    .drawer-hd{padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .drawer-hd h2{font-size:16px;font-weight:700}
+    .drawer-close{width:32px;height:32px;border:none;background:var(--cream);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:16px}
+    .drawer-bd{flex:1;overflow-y:auto;padding:20px}
+    .drawer-sec{margin-bottom:24px}
+    .drawer-sec-t{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text2);font-weight:600;margin-bottom:10px}
+    .act-list{display:flex;flex-direction:column;gap:6px}
+    .act-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--rs);border:1px solid var(--border);background:#fff;cursor:pointer;transition:all .2s;font-size:13px;font-family:inherit;color:var(--text);text-align:left}
+    .act-item:hover{background:var(--cream);border-color:#cbd5e1}
+    .act-item svg{width:18px;height:18px;color:var(--text2)}
+    .act-item.danger{color:#dc2626}
+    .act-item.danger svg{color:#dc2626}
+    .act-item.danger:hover{background:var(--red-bg);border-color:var(--red-bd)}
+    .hint-box{background:#f0f9ff;border:1px solid #bae6fd;border-radius:var(--rs);padding:12px;font-size:12px;color:#0369a1;line-height:1.6}
+
+    /* FOOTER */
+    .footer{position:fixed;bottom:0;left:0;right:0;background:rgba(250,248,245,.92);backdrop-filter:blur(12px);border-top:1px solid var(--border);padding:10px 20px;text-align:center;font-size:11px;color:var(--text2);z-index:50}
+
+    /* ANIM */
+    .fade-in{animation:fadeIn .4s ease both}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+    @keyframes slideDown{from{transform:translateY(0);opacity:1}to{transform:translateY(20px);opacity:0}}
+
+    mark{background:#fef08a;color:inherit;padding:0 2px;border-radius:2px}
+    ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#d4d0cc;border-radius:3px}::-webkit-scrollbar-thumb:hover{background:#b8b4b0}
+
+    /* EMP ACTIONS visibility fix for mobile */
+    @media(hover:none){.emp-acts{opacity:1}}
+
+    @media(max-width:400px){
+      .brand-text h1{font-size:16px}
+      .leader-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+      .leader-card{padding:14px 8px 12px}
+      .leader-nm{font-size:14px}
+      .emp-item{flex-wrap:wrap;gap:6px;padding:10px 12px}
+      .emp-mid{flex-basis:calc(100% - 42px)}
+      .emp-name{white-space:normal}
+      .emp-pos{white-space:normal;text-overflow:unset}
+      .emp-cs{flex-basis:100%;padding-left:42px}
+      .emp-acts{opacity:1}
+    }
+  </style>
+</head>
+<body>
+<!-- SPLASH -->
+<div class="splash" id="splash">
+  <div class="splash-icon">🏔️</div>
+  <div class="splash-text">青海开元大饭店</div>
+  <div class="splash-sub">INTERNAL DIRECTORY</div>
+</div>
+<div id="app"></div>
+
+<!-- MODAL: Add/Edit Employee -->
+<div class="modal-overlay" id="empModal">
+  <div class="modal">
+    <div class="modal-hd"><h3 id="empModalTitle">添加人员</h3><button class="modal-close" onclick="closeEmpModal()">✕</button></div>
+    <div class="modal-bd">
+      <div class="form-group"><label class="form-label">姓名 *</label><input class="form-input" id="empName" placeholder="请输入姓名"></div>
+      <div class="form-group"><label class="form-label">职位 *</label><input class="form-input" id="empPos" placeholder="请输入职位"></div>
+      <div class="form-group"><label class="form-label">手机号</label><input class="form-input" id="empMobile" placeholder="请输入手机号" type="tel"></div>
+      <div class="form-group"><label class="form-label">内线号码</label><input class="form-input" id="empExt" placeholder="如 8006 或 8629 / 8627"></div>
+      <input type="hidden" id="empDept">
+      <input type="hidden" id="empId">
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-ghost" onclick="closeEmpModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveEmp()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Confirm Delete -->
+<div class="modal-overlay" id="delModal">
+  <div class="modal" style="width:320px">
+    <div class="modal-hd"><h3>确认删除</h3><button class="modal-close" onclick="closeDelModal()">✕</button></div>
+    <div class="modal-bd"><p id="delMsg" style="font-size:14px;line-height:1.6"></p></div>
+    <div class="modal-ft">
+      <button class="btn btn-ghost" onclick="closeDelModal()">取消</button>
+      <button class="btn btn-danger" id="delConfirmBtn">确认删除</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Add Extension -->
+<div class="modal-overlay" id="extModal">
+  <div class="modal" style="width:320px">
+    <div class="modal-hd"><h3 id="extModalTitle">添加内线号码</h3><button class="modal-close" onclick="closeExtModal()">✕</button></div>
+    <div class="modal-bd">
+      <div class="form-group"><label class="form-label">内线号码 *</label><input class="form-input" id="extNum" placeholder="如 8688"></div>
+      <div class="form-group"><label class="form-label">说明</label><input class="form-input" id="extLabel" placeholder="如 大堂吧"></div>
+      <input type="hidden" id="extDept">
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-ghost" onclick="closeExtModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveExt()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Add/Edit Emergency -->
+<div class="modal-overlay" id="emergModal">
+  <div class="modal" style="width:320px">
+    <div class="modal-hd"><h3 id="emergModalTitle">添加应急电话</h3><button class="modal-close" onclick="closeEmergModal()">✕</button></div>
+    <div class="modal-bd">
+      <div class="form-group"><label class="form-label">名称 *</label><input class="form-input" id="emergName" placeholder="如 城东区应急管理局"></div>
+      <div class="form-group"><label class="form-label">说明</label><input class="form-input" id="emergDesc" placeholder="如 应急管理"></div>
+      <div class="form-group"><label class="form-label">电话 *</label><input class="form-input" id="emergMobile" placeholder="如 0971-8176485" type="tel"></div>
+      <input type="hidden" id="emergIdx">
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-ghost" onclick="closeEmergModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveEmerg()">保存</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="fileInput" accept=".json,.csv" style="display:none">
+
+<script>
+// ================================================================
+//  DATA
+// ================================================================
+const DATA = {
+  employees: [
+    // 高管
+    {id:"1",name:"马青",department:"高管",position:"董事长",mobile:"",ext:"8006"},
+    {id:"2",name:"马斌全",department:"高管",position:"总经理",mobile:"13139043131",ext:"8000"},
+    {id:"3",name:"马秀超",department:"高管",position:"副总经理兼财务部总监",mobile:"18797326120",ext:"8505"},
+    // 马秀超同时在财务部
+    // 人力资源部
+    {id:"4",name:"妥银萍",department:"人力资源部",position:"人事经理",mobile:"13099786673",ext:"8101"},
+    {id:"5",name:"王婷婷",department:"人力资源部",position:"人事专员",mobile:"17697515227",ext:"8106"},
+    {id:"6",name:"王君",department:"人力资源部",position:"司机",mobile:"18897298884",ext:""},
+    // 财务部 (马秀超 also here as 财务部总监)
+    {id:"3b",name:"马秀超",department:"财务部",position:"副总经理兼财务部总监",mobile:"18797326120",ext:"8505"},
+    {id:"8",name:"刘延梅",department:"财务部",position:"总账会计",mobile:"19153874467",ext:"8506"},
+    {id:"10",name:"马艳丽",department:"财务部",position:"审计",mobile:"13997120401",ext:"8502"},
+    {id:"11",name:"钟巧弟",department:"财务部",position:"信用会计",mobile:"18419143665",ext:""},
+    // 市场部
+    {id:"12",name:"梁世奇",department:"销售部",position:"销售经理",mobile:"15500754020",ext:"8207"},
+    {id:"13",name:"马静",department:"销售部",position:"销售代表",mobile:"15909717742",ext:"8209"},
+    {id:"15",name:"张玉婕",department:"收益部",position:"收益部经理",mobile:"18244239795",ext:"8333"},
+    {id:"45",name:"刘斌",department:"人力资源部",position:"美工",mobile:"13139082443",ext:"8102"},
+    {id:"16",name:"童香祖",department:"收益部",position:"文员",mobile:"15897109179",ext:"8001"},
+    {id:"46",name:"王文慧",department:"收益部",position:"文员",mobile:"17392935753",ext:""},
+    // 餐饮部
+    {id:"17",name:"马鸿儒",department:"餐饮部",position:"餐饮部经理",mobile:"13897261394",ext:"8629 / 8627"},
+    {id:"18",name:"范海燕",department:"餐饮部",position:"中餐厅副经理",mobile:"17797115793",ext:""},
+    {id:"19",name:"沈金忠",department:"餐饮部",position:"中厨房厨师长",mobile:"15297192232",ext:""},
+    {id:"20",name:"马安明",department:"餐饮部",position:"西餐厅主管",mobile:"15719760919",ext:"8633"},
+    // 商管部
+    {id:"21",name:"冯丽梅",department:"商管部",position:"招商部经理",mobile:"15597460099",ext:""},
+    {id:"22",name:"刘建忠",department:"商管部",position:"招商部副经理",mobile:"18997089667",ext:""},
+    // 房务部（前厅部）
+    {id:"23",name:"雷秀",department:"房务部（前厅部）",position:"房务部总监",mobile:"18997319970",ext:"8800"},
+    {id:"24",name:"王萍龙",department:"房务部（前厅部）",position:"前台主管",mobile:"18146370687",ext:""},
+    // 房务部（管家部）
+    {id:"25",name:"马兰英",department:"房务部（管家部）",position:"客房经理",mobile:"18097075660",ext:"8801"},
+    {id:"26",name:"韩永梅",department:"房务部（管家部）",position:"楼层领班",mobile:"18097023149",ext:"8802"},
+    {id:"27",name:"周有菊",department:"房务部（管家部）",position:"楼层领班",mobile:"18197281360",ext:""},
+    {id:"28",name:"韩占花",department:"房务部（管家部）",position:"楼层领班",mobile:"13997244483",ext:""},
+    {id:"47",name:"达罗晒吉",department:"房务部（管家部）",position:"楼层领班",mobile:"15809715329",ext:""},
+    {id:"29",name:"马延梅",department:"房务部（管家部）",position:"洗衣房领班",mobile:"15003661415",ext:"8821"},
+    {id:"30",name:"马菊英",department:"房务部（管家部）",position:"PA领班",mobile:"18297173985",ext:""},
+    {id:"31",name:"张新丽",department:"房务部（管家部）",position:"制服房制服员兼库管",mobile:"13139089683",ext:"8835"},
+    // 工程部
+    {id:"32",name:"赵成",department:"工程部",position:"运保部经理兼工程部经理",mobile:"18997146211",ext:"8703"},
+    {id:"33",name:"王毅",department:"工程部",position:"IT经理",mobile:"19997277768",ext:""},
+    // 安保部
+    {id:"34",name:"张文全",department:"安保部",position:"安保经理",mobile:"15597144851",ext:"8119"},
+    {id:"35",name:"丁世魁",department:"安保部",position:"队长",mobile:"18709712940",ext:""},
+    {id:"36",name:"张新华",department:"安保部",position:"队长",mobile:"18397109002",ext:""},
+    {id:"37",name:"王正海",department:"安保部",position:"队长",mobile:"13897224847",ext:""},
+    {id:"38",name:"王春山",department:"安保部",position:"消控员",mobile:"15110948648",ext:""},
+    {id:"39",name:"张冬梅",department:"安保部",position:"消控员",mobile:"15597255177",ext:""},
+    {id:"40",name:"张金莲",department:"安保部",position:"消控员",mobile:"15213996249",ext:""},
+    {id:"41",name:"李德林",department:"安保部",position:"安保员工",mobile:"18197269927",ext:""},
+    {id:"42",name:"郭生贵",department:"安保部",position:"安保员工",mobile:"15111724202",ext:""},
+    {id:"43",name:"苗永兴",department:"安保部",position:"安保员工",mobile:"13997084415",ext:""},
+  ],
+  // 部门设施内线（非个人归属）
+  deptExts: {
+    "工程部": [
+      {ext:"",label:"维修间 · 锅炉房"},
+    ],
+  },
+  // 独立服务热线
+  facilities: [
+    {name:"总机",desc:"酒店总机转接",ext:"0",icon:"☎️"},
+    {name:"接待/收银",desc:"前台接待与收银",ext:"7",icon:"🏨"},
+    {name:"宾客服务中心",desc:"对客服务专线",ext:"8777 / 8666",icon:"🎯"},
+    {name:"大堂吧",desc:"餐饮部 · 大堂吧",ext:"8688",icon:"☕"},
+    {name:"六楼吧台",desc:"餐饮部 · 六楼吧台",ext:"8655",icon:"🍸"},
+    {name:"海迪耶国际饭店",desc:"酒店总机",ext:"0971-6159333",icon:"🏢"},
+  ],
+  // 外部应急电话
+  emergency: [
+    {name:"城东区应急管理局",desc:"应急管理",mobile:"0971-8176485"},
+  ],
+};
+
+// ================================================================
+//  STATE & STORAGE
+// ================================================================
+const STORE_KEY = 'kaiyuan-dir-v3';
+let state = loadState();
+let searchQ = '';
+let filterDept = '';
+let openDepts = new Set();
+let _nextDel = null;
+let _nextDelType = '';
+
+function loadState() {
+  try {
+    const s = localStorage.getItem(STORE_KEY);
+    if (s) {
+      const p = JSON.parse(s);
+      if (p.employees) {
+        // Ensure all default fields exist (backward compat)
+        if (!p.facilities) p.facilities = JSON.parse(JSON.stringify(DATA.facilities));
+        if (!p.emergency) p.emergency = JSON.parse(JSON.stringify(DATA.emergency));
+        if (!p.deptExts) p.deptExts = JSON.parse(JSON.stringify(DATA.deptExts));
+        return p;
+      }
+    }
+  } catch {}
+  return JSON.parse(JSON.stringify(DATA));
+}
+function saveState() {
+  state.lastUpdated = new Date().toISOString();
+  localStorage.setItem(STORE_KEY, JSON.stringify(state));
+}
+function genId() { return 'e' + Date.now() + Math.random().toString(36).slice(2,6); }
+
+// ================================================================
+//  HELPERS
+// ================================================================
+const DEPT_ORDER = ["高管","人力资源部","财务部","销售部","收益部","餐饮部","商管部","房务部（前厅部）","房务部（管家部）","工程部","安保部"];
+const DEPT_ICONS = {
+  "高管":{i:"👑",bg:"#fef3c7"},"人力资源部":{i:"👥",bg:"#fce7f3"},"财务部":{i:"💰",bg:"#dcfce7"},
+  "销售部":{i:"📊",bg:"#dbeafe"},"收益部":{i:"📈",bg:"#f0fdf4"},"餐饮部":{i:"🍽️",bg:"#fee2e2"},"商管部":{i:"🏬",bg:"#fef9c3"},
+  "房务部（前厅部）":{i:"🏨",bg:"#cffafe"},"房务部（管家部）":{i:"🧹",bg:"#d1fae5"},
+  "工程部":{i:"⚙️",bg:"#ffedd5"},"安保部":{i:"🛡️",bg:"#e0e7ff"},
+};
+
+function getColor(n){const c=['#e11d48','#7c3aed','#2563eb','#0891b2','#059669','#d97706','#dc2626','#4f46e5','#0d9488','#c026d3'];let h=0;for(let i=0;i<n.length;i++)h=n.charCodeAt(i)+((h<<5)-h);return c[Math.abs(h)%c.length]}
+function initial(n){return n?n.charAt(0):'？'}
+function hl(t,q){if(!q||!t)return t;const r=new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'gi');return t.replace(r,'<mark>$1</mark>')}
+function callP(n){location.href=`tel:${(n||'').replace(/[\s\-/]/g,'')}`}
+function groupByDept(list){const g={};list.forEach(e=>{if(!g[e.department])g[e.department]=[];g[e.department].push(e)});return g}
+function filterEmp(q){
+  if(!q.trim())return state.employees;
+  const s=q.toLowerCase().trim();
+  return state.employees.filter(e=>(e.name&&e.name.toLowerCase().includes(s))||e.department.toLowerCase().includes(s)||e.position.toLowerCase().includes(s)||(e.mobile&&e.mobile.includes(s))||(e.ext&&e.ext.includes(s)));
+}
+function filterFac(q){
+  if(!q.trim())return state.facilities||[];
+  const s=q.toLowerCase().trim();
+  return (state.facilities||[]).filter(f=>f.name.toLowerCase().includes(s)||f.desc.toLowerCase().includes(s)||(f.ext&&f.ext.includes(s)));
+}
+function filterEmerg(q){
+  if(!q.trim())return state.emergency||[];
+  const s=q.toLowerCase().trim();
+  return (state.emergency||[]).filter(e=>e.name.toLowerCase().includes(s)||e.desc.toLowerCase().includes(s)||(e.mobile&&e.mobile.includes(s)));
+}
+function fmtDate(iso){if(!iso)return'未记录';const d=new Date(iso);return d.toLocaleDateString('zh-CN',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})}
+function today(){return new Date().toISOString().split('T')[0]}
+
+// SVG icons
+const S={
+  search:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.34-4.34"/></svg>`,
+  x:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>`,
+  chev:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>`,
+  phone:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"/></svg>`,
+  brief:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg>`,
+  ext:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12h4"/><path d="M10 8h4"/><path d="M14 21v-3a2 2 0 0 0-4 0v3"/><path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"/><path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/></svg>`,
+  settings:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
+  dl:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>`,
+  ul:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>`,
+  rst:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>`,
+  plus:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>`,
+  edit:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>`,
+  trash:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>`,
+};
+
+// ================================================================
+//  RENDER
+// ================================================================
+function render() {
+  const q = searchQ.toLowerCase().trim();
+  const emps = filterEmp(searchQ);
+  const facs = filterFac(searchQ);
+  const emgs = filterEmerg(searchQ);
+
+  let display = filterDept ? emps.filter(e => e.department === filterDept) : emps;
+  let displayFac = filterDept ? facs : facs; // facilities shown separately
+  const groups = groupByDept(display);
+  const allDepts = DEPT_ORDER.filter(d => groups[d]);
+  const lastUp = state.lastUpdated;
+  const isSearching = !!q;
+
+  let h = '';
+
+  // ─── HEADER ───
+  h += `<header class="header"><div class="header-inner">
+    <div class="header-brand">
+      <div class="brand-icon">🏔️</div>
+      <div class="brand-text"><h1>青海开元大饭店</h1><div class="brand-sub">INTERNAL DIRECTORY</div></div>
+      <div class="brand-meta"><div class="count">${state.employees.length} 人</div><div>内部通讯录</div></div>
+    </div>
+    <div class="search-wrap">
+      ${S.search}
+      <input type="text" placeholder="搜索姓名、部门、职位、电话…" value="${searchQ}" oninput="onSearch(this.value)" id="si">
+      <button class="search-clear ${searchQ?'visible':''}" onclick="clearSearch()">${S.x}</button>
+    </div>
+  </div></header>`;
+
+  // ─── FILTER ───
+  h += `<div class="filter-bar">
+    <button class="filter-chip ${!filterDept?'active':''}" onclick="setFilter('')">全部</button>
+    ${DEPT_ORDER.map(d=>{const ic=DEPT_ICONS[d];if(!ic)return'';return`<button class="filter-chip ${filterDept===d?'active':''}" onclick="setFilter('${d}')">${ic.i} ${d}</button>`}).join('')}
+  </div>`;
+
+  // ─── STATS ───
+  h += `<div class="stats-bar">
+    <span>共 <span class="n">${display.length}</span> 位联系人${isSearching?`（"${searchQ}"）`:''}</span>
+    <div class="expand-controls">
+      <button class="expand-btn" onclick="showExportMenu(event)" style="display:flex;align-items:center;gap:3px">${S.dl} 导出</button>
+      <button class="expand-btn" onclick="expandAll()">全部展开</button>
+      <button class="expand-btn" onclick="collapseAll()">折叠</button>
+    </div>
+  </div>`;
+
+  h += `<main class="main">`;
+
+  // ─── LEADERSHIP (no avatar) ───
+  if (groups['高管'] && groups['高管'].length) {
+    const leaders = groups['高管'];
+    h += `<div class="sec-label">酒店高管</div><div class="leader-grid">`;
+    leaders.forEach((e,i) => {
+      h += `<div class="leader-card fade-in ${leaders.length>3?'sm':''}" style="animation-delay:${i*.04}s">
+        <div class="leader-nm">${q?hl(e.name,q):e.name}</div>
+        <div class="leader-ti">${q?hl(e.position,q):e.position}</div>
+        <div class="leader-cs">
+          ${e.ext?`<span class="leader-ext">${S.ext} 内线 ${e.ext}</span>`:''}
+          ${e.mobile?`<a class="leader-ph" href="javascript:void(0)" onclick="callP('${e.mobile}')">${S.phone} ${e.mobile}</a>`:''}
+        </div>
+      </div>`;
+    });
+    h += `</div>`;
+  }
+
+  // ─── 服务热线 (moved above departments) ───
+  if (displayFac.length) {
+    const isOpen = openDepts.has('__fac');
+    h += `<div class="fac-card fade-in ${isOpen?'open':''}">
+      <div class="dept-hd" onclick="toggleDept('__fac')">
+        <div class="dept-icon" style="background:#fef3c7">🎯</div>
+        <div class="dept-info"><div class="dept-nm">服务热线</div></div>
+        <span class="dept-badge">${displayFac.length}</span>
+        <div class="dept-arrow">${S.chev}</div>
+      </div>
+      <div class="dept-body">
+        ${displayFac.map(f=>`<div class="fac-item">
+          <div class="fac-ic">${f.icon||'📞'}</div>
+          <div class="fac-info"><div class="fac-nm">${q?hl(f.name,q):f.name}</div><div class="fac-desc">${q?hl(f.desc,q):f.desc}</div></div>
+          ${f.ext?`<span class="fac-ext">${f.ext}</span>`:''}
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  // ─── DEPARTMENTS ───
+  allDepts.filter(d=>d!=='高管').forEach((dept,idx) => {
+    const emps = groups[dept] || [];
+    const ic = DEPT_ICONS[dept] || {i:'📌',bg:'#f1f5f9'};
+    const isOpen = openDepts.has(dept);
+    const deptExts = (state.deptExts && state.deptExts[dept]) || [];
+
+    // Collect extensions for chip bar
+    const personalExts = emps.filter(e=>e.ext).map(e=>({ext:e.ext,name:e.name||e.position,type:'personal'}));
+    const facilityExts = deptExts.filter(e=>e.ext).map(e=>({ext:e.ext,name:e.label,type:'facility'}));
+    const allExts = [...personalExts,...facilityExts];
+
+    // Ext chips
+    let extH = '';
+    if (allExts.length) {
+      extH = `<div class="ext-bar">`;
+      allExts.forEach(e => {
+        extH += `<span class="ext-chip ${e.type}">${S.ext} ${e.ext}<span class="ext-lbl"> · ${e.name}</span></span>`;
+      });
+      extH += `</div>`;
+    }
+
+    // Employee items
+    let empH = emps.map(e => renderEmp(e, dept)).join('');
+
+    // Facility items (dept-level non-personal extensions)
+    let facH = deptExts.filter(f=>f.ext).map(f => `
+      <div class="emp-item">
+        <div class="emp-av" style="background:var(--amber-bg);color:#92400e;font-size:14px">📍</div>
+        <div class="emp-mid">
+          <span class="emp-name">${q?hl(f.label,q):f.label}</span>
+          <span class="emp-tag tag-facility">设施</span>
+        </div>
+        <div class="emp-cs"><span class="ph-btn ext">${S.ext} ${f.ext}</span></div>
+        <div class="emp-acts">
+          <button class="emp-act del" onclick="delExt('${dept}','${f.ext}')" title="删除此内线">✕</button>
+        </div>
+      </div>
+    `).join('');
+
+    // Non-ext facilities (like 锅炉房)
+    let noExtFacH = deptExts.filter(f=>!f.ext).map(f => `
+      <div class="emp-item">
+        <div class="emp-av" style="background:var(--amber-bg);color:#92400e;font-size:14px">🔧</div>
+        <div class="emp-mid">
+          <span class="emp-name">${q?hl(f.label,q):f.label}</span>
+          <span class="emp-tag tag-facility">设施</span>
+        </div>
+        <div class="emp-acts">
+          <button class="emp-act del" onclick="delExtLabel('${dept}','${f.label}')" title="删除">✕</button>
+        </div>
+      </div>
+    `).join('');
+
+    // Action buttons
+    let actH = `<div class="dept-actions">
+      <button class="dept-act-btn" onclick="openAddEmp('${dept}')">${S.plus} 添加人员</button>
+      <button class="dept-act-btn" onclick="openAddExt('${dept}')">${S.ext} 添加内线</button>
+    </div>`;
+
+    h += `<div class="dept-card fade-in ${isOpen?'open':''}" data-dept="${dept}" style="animation-delay:${(idx*.06)+.1}s">
+      <div class="dept-hd" onclick="toggleDept('${dept}')">
+        <div class="dept-icon" style="background:${ic.bg}">${ic.i}</div>
+        <div class="dept-info">
+          <div class="dept-nm">${dept} <span class="dept-sub">${emps.length} 人${deptExts.length?' · '+deptExts.length+' 内线':''}</span></div>
+        </div>
+        <span class="dept-badge">${emps.length + deptExts.length}</span>
+        <div class="dept-arrow">${S.chev}</div>
+      </div>
+      ${extH}
+      <div class="dept-body">
+        ${actH}
+        ${empH}${facH}${noExtFacH}
+      </div>
+    </div>`;
+  });
+
+  // ─── 外部应急 ───
+  if (emgs.length && (!filterDept)) {
+    const isOpen = openDepts.has('__emg');
+    h += `<div class="dept-card fade-in ${isOpen?'open':''}" style="border-color:var(--red-bd)" data-dept="__emg">
+      <div class="dept-hd" onclick="toggleDept('__emg')">
+        <div class="dept-icon" style="background:var(--red-bg)">🚨</div>
+        <div class="dept-info"><div class="dept-nm" style="color:#dc2626">外部应急电话</div></div>
+        <span class="dept-badge">${emgs.length}</span>
+        <div class="dept-arrow">${S.chev}</div>
+      </div>
+      <div class="dept-body">
+        <div class="dept-actions">
+          <button class="dept-act-btn" onclick="openAddEmerg()">${S.plus} 添加应急电话</button>
+        </div>
+        ${emgs.map((e,i)=>`<div class="emp-item">
+          <div class="emp-av" style="background:var(--red-bg);color:#dc2626;font-size:14px">🚨</div>
+          <div class="emp-mid">
+            <span class="emp-name">${q?hl(e.name,q):e.name}</span>
+            <span class="emp-tag tag-emergency">应急</span>
+            <span class="emp-pos">${e.desc}</span>
+          </div>
+          <div class="emp-cs">${e.mobile?`<a class="ph-btn mobile" href="javascript:void(0)" onclick="callP('${e.mobile}')">${S.phone} ${e.mobile}</a>`:''}</div>
+          <div class="emp-acts" style="opacity:1">
+            <button class="emp-act edit" onclick="openEditEmerg(${i})" title="编辑">✎</button>
+            <button class="emp-act del" onclick="confirmDelEmerg(${i})" title="删除">✕</button>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  if (!allDepts.length && !displayFac.length && !emgs.length) {
+    h += `<div class="empty fade-in"><div class="icon">🔍</div><h3>未找到匹配记录</h3><p>请尝试其他关键词</p></div>`;
+  }
+
+  h += `</main>`;
+  h += `<div class="footer">青海开元大饭店 · 内部通讯录 · ${fmtDate(lastUp)}</div>`;
+
+  // ─── DRAWER ───
+  h += `
+    <div class="overlay" id="ov" onclick="toggleDrawer()"></div>
+    <div class="drawer" id="dr">
+      <div class="drawer-hd"><h2>数据管理</h2><button class="drawer-close" onclick="toggleDrawer()">✕</button></div>
+      <div class="drawer-bd">
+        <div class="drawer-sec"><div class="drawer-sec-t">最后更新</div>
+          <div style="background:var(--cream);border-radius:10px;padding:14px"><div style="font-size:12px;color:var(--text2);margin-bottom:4px">更新时间</div><div style="font-size:14px;font-weight:500">${fmtDate(lastUp)}</div></div>
+        </div>
+        <div class="drawer-sec"><div class="drawer-sec-t">数据操作</div>
+          <div class="act-list">
+            <button class="act-item" onclick="exportHTML()">${S.dl} 导出打印报表（推荐）</button>
+            <button class="act-item" onclick="exportCSVFull()">${S.dl} 导出完整 CSV</button>
+            <button class="act-item" onclick="exportJSON()">${S.dl} 导出 JSON（备份）</button>
+            <button class="act-item" onclick="exportCSV()">${S.dl} 导出员工 CSV</button>
+            <button class="act-item" onclick="document.getElementById('fileInput').click()">${S.ul} 导入数据</button>
+            <button class="act-item" style="color:var(--gold-dark)" onclick="resetData()">${S.rst} 重置为默认数据</button>
+          </div>
+        </div>
+        <div class="drawer-sec"><div class="hint-box">📋 支持 JSON / CSV 导入，导入将覆盖现有数据。导出报表可直接打印或复制到 Excel。完整 CSV 包含所有联系人、服务热线及应急电话。</div></div>
+      </div>
+    </div>`;
+
+  document.getElementById('app').innerHTML = h;
+  if (searchQ) { const inp=document.getElementById('si'); if(inp){inp.focus();inp.selectionStart=inp.selectionEnd=inp.value.length;} }
+}
+
+function renderEmp(e, dept) {
+  const unnamed = !e.name;
+  const dn = unnamed ? `【${e.position}】` : e.name;
+  const q = searchQ.toLowerCase().trim();
+  const color = getColor(e.name||e.position);
+
+  let cs = '';
+  if (e.mobile) cs += `<a class="ph-btn mobile" href="javascript:void(0)" onclick="callP('${e.mobile}')">${S.phone} ${e.mobile}</a>`;
+  if (e.ext) cs += `<span class="ph-btn ext">${S.ext} ${e.ext}</span>`;
+
+  return `<div class="emp-item">
+    <div class="emp-av" style="background:${color}12;color:${color}">${initial(e.name||e.position)}</div>
+    <div class="emp-mid">
+      <span class="emp-name ${unnamed?'unnamed':''}">${q?hl(dn,q):dn}</span>
+      ${unnamed?'<span class="emp-tag tag-facility">岗位</span>':''}
+      <span class="emp-pos">${q?hl(e.position,q):e.position}</span>
+    </div>
+    <div class="emp-cs">${cs}</div>
+    <div class="emp-acts">
+      <button class="emp-act edit" onclick="event.stopPropagation();openEditEmp('${e.id}')" title="编辑">✎</button>
+      <button class="emp-act del" onclick="event.stopPropagation();confirmDelEmp('${e.id}')" title="删除">✕</button>
+    </div>
+  </div>`;
+}
+
+// ================================================================
+//  INTERACTIONS
+// ================================================================
+function onSearch(v){searchQ=v;render()}
+function clearSearch(){searchQ='';filterDept='';render()}
+function setFilter(d){filterDept=d;render()}
+function toggleDept(d){if(openDepts.has(d))openDepts.delete(d);else openDepts.add(d);render()}
+function expandAll(){DEPT_ORDER.forEach(d=>openDepts.add(d));openDepts.add('__fac');openDepts.add('__emg');render()}
+function collapseAll(){openDepts.clear();render()}
+function toggleDrawer(){document.getElementById('ov').classList.toggle('open');document.getElementById('dr').classList.toggle('open')}
+
+// ================================================================
+//  EMP CRUD
+// ================================================================
+function openAddEmp(dept) {
+  document.getElementById('empModalTitle').textContent = `添加人员 — ${dept}`;
+  document.getElementById('empName').value = '';
+  document.getElementById('empPos').value = '';
+  document.getElementById('empMobile').value = '';
+  document.getElementById('empExt').value = '';
+  document.getElementById('empDept').value = dept;
+  document.getElementById('empId').value = '';
+  document.getElementById('empModal').classList.add('open');
+  setTimeout(()=>document.getElementById('empName').focus(),100);
+}
+
+function openEditEmp(id) {
+  const emp = state.employees.find(e=>e.id===id);
+  if (!emp) return;
+  document.getElementById('empModalTitle').textContent = `编辑人员 — ${emp.department}`;
+  document.getElementById('empName').value = emp.name;
+  document.getElementById('empPos').value = emp.position;
+  document.getElementById('empMobile').value = emp.mobile;
+  document.getElementById('empExt').value = emp.ext;
+  document.getElementById('empDept').value = emp.department;
+  document.getElementById('empId').value = id;
+  document.getElementById('empModal').classList.add('open');
+  setTimeout(()=>document.getElementById('empName').focus(),100);
+}
+
+function closeEmpModal() { document.getElementById('empModal').classList.remove('open'); }
+
+function saveEmp() {
+  const name = document.getElementById('empName').value.trim();
+  const pos = document.getElementById('empPos').value.trim();
+  if (!name || !pos) { toast('姓名和职位为必填项','error'); return; }
+  const mobile = document.getElementById('empMobile').value.trim();
+  const ext = document.getElementById('empExt').value.trim();
+  const dept = document.getElementById('empDept').value;
+  const id = document.getElementById('empId').value;
+
+  if (id) {
+    // Edit
+    const idx = state.employees.findIndex(e=>e.id===id);
+    if (idx>=0) {
+      state.employees[idx] = {...state.employees[idx], name, position:pos, mobile, ext, department:dept};
+    }
+  } else {
+    // Add
+    state.employees.push({id:genId(), name, department:dept, position:pos, mobile, ext});
+  }
+  saveState();
+  closeEmpModal();
+  render();
+  toast(id?'人员信息已更新':'人员已添加','success');
+}
+
+function confirmDelEmp(id) {
+  const emp = state.employees.find(e=>e.id===id);
+  if (!emp) return;
+  document.getElementById('delMsg').textContent = `确认删除「${emp.name||emp.position}」(${emp.department})？此操作不可撤销。`;
+  _nextDel = id; _nextDelType = 'emp';
+  document.getElementById('delConfirmBtn').onclick = doDel;
+  document.getElementById('delModal').classList.add('open');
+}
+
+function closeDelModal() { document.getElementById('delModal').classList.remove('open'); _nextDel=null; }
+
+function doDel() {
+  if (_nextDelType === 'emp' && _nextDel) {
+    state.employees = state.employees.filter(e=>e.id!==_nextDel);
+    saveState(); render(); toast('人员已删除','success');
+  } else if (_nextDelType === 'ext' && _nextDel) {
+    const {dept, ext} = _nextDel;
+    if (state.deptExts[dept]) {
+      state.deptExts[dept] = state.deptExts[dept].filter(e=>e.ext!==ext);
+      if (!state.deptExts[dept].length) delete state.deptExts[dept];
+      saveState(); render(); toast('内线已删除','success');
+    }
+  } else if (_nextDelType === 'extLabel' && _nextDel) {
+    const {dept, label} = _nextDel;
+    if (state.deptExts[dept]) {
+      state.deptExts[dept] = state.deptExts[dept].filter(e=>e.label!==label);
+      if (!state.deptExts[dept].length) delete state.deptExts[dept];
+      saveState(); render(); toast('设施已删除','success');
+    }
+  } else if (_nextDelType === 'emerg' && _nextDel !== null) {
+    state.emergency.splice(_nextDel, 1);
+    saveState(); render(); toast('应急电话已删除','success');
+  }
+  closeDelModal();
+}
+
+// ================================================================
+//  EXT CRUD (dept-level non-personal)
+// ================================================================
+function openAddExt(dept) {
+  document.getElementById('extModalTitle').textContent = `添加内线 — ${dept}`;
+  document.getElementById('extNum').value = '';
+  document.getElementById('extLabel').value = '';
+  document.getElementById('extDept').value = dept;
+  document.getElementById('extModal').classList.add('open');
+  setTimeout(()=>document.getElementById('extNum').focus(),100);
+}
+
+function closeExtModal() { document.getElementById('extModal').classList.remove('open'); }
+
+function saveExt() {
+  const ext = document.getElementById('extNum').value.trim();
+  const label = document.getElementById('extLabel').value.trim();
+  if (!label) { toast('说明为必填项','error'); return; }
+  const dept = document.getElementById('extDept').value;
+  if (!state.deptExts) state.deptExts = {};
+  if (!state.deptExts[dept]) state.deptExts[dept] = [];
+  state.deptExts[dept].push({ext, label});
+  saveState();
+  closeExtModal();
+  render();
+  toast('内线已添加','success');
+}
+
+function delExt(dept, ext) {
+  const item = (state.deptExts[dept]||[]).find(e=>e.ext===ext);
+  document.getElementById('delMsg').textContent = `确认删除内线「${ext}」(${item?item.label:''})？`;
+  _nextDel = {dept, ext}; _nextDelType = 'ext';
+  document.getElementById('delConfirmBtn').onclick = doDel;
+  document.getElementById('delModal').classList.add('open');
+}
+
+function delExtLabel(dept, label) {
+  document.getElementById('delMsg').textContent = `确认删除「${label}」？`;
+  _nextDel = {dept, label}; _nextDelType = 'extLabel';
+  document.getElementById('delConfirmBtn').onclick = doDel;
+  document.getElementById('delModal').classList.add('open');
+}
+
+// ================================================================
+//  EMERGENCY CRUD
+// ================================================================
+function openAddEmerg() {
+  document.getElementById('emergModalTitle').textContent = '添加应急电话';
+  document.getElementById('emergName').value = '';
+  document.getElementById('emergDesc').value = '';
+  document.getElementById('emergMobile').value = '';
+  document.getElementById('emergIdx').value = '';
+  document.getElementById('emergModal').classList.add('open');
+  setTimeout(()=>document.getElementById('emergName').focus(),100);
+}
+
+function openEditEmerg(idx) {
+  const e = state.emergency[idx];
+  if (!e) return;
+  document.getElementById('emergModalTitle').textContent = '编辑应急电话';
+  document.getElementById('emergName').value = e.name;
+  document.getElementById('emergDesc').value = e.desc;
+  document.getElementById('emergMobile').value = e.mobile;
+  document.getElementById('emergIdx').value = idx;
+  document.getElementById('emergModal').classList.add('open');
+  setTimeout(()=>document.getElementById('emergName').focus(),100);
+}
+
+function closeEmergModal() { document.getElementById('emergModal').classList.remove('open'); }
+
+function saveEmerg() {
+  const name = document.getElementById('emergName').value.trim();
+  const mobile = document.getElementById('emergMobile').value.trim();
+  if (!name || !mobile) { toast('名称和电话为必填项','error'); return; }
+  const desc = document.getElementById('emergDesc').value.trim();
+  const idx = document.getElementById('emergIdx').value;
+  if (idx !== '') {
+    state.emergency[Number(idx)] = {name, desc, mobile};
+  } else {
+    state.emergency.push({name, desc, mobile});
+  }
+  saveState(); closeEmergModal(); render();
+  toast(idx!==''?'应急电话已更新':'应急电话已添加','success');
+}
+
+function confirmDelEmerg(idx) {
+  const e = state.emergency[idx];
+  if (!e) return;
+  document.getElementById('delMsg').textContent = `确认删除「${e.name}」(${e.mobile})？`;
+  _nextDel = idx; _nextDelType = 'emerg';
+  document.getElementById('delConfirmBtn').onclick = doDel;
+  document.getElementById('delModal').classList.add('open');
+}
+
+// ================================================================
+//  IMPORT / EXPORT
+// ================================================================
+function exportJSON() {
+  download(JSON.stringify(state,null,2),`通讯录_${today()}.json`,'application/json');
+  toast('JSON 导出成功','success');
+}
+function exportCSV() {
+  const B='\uFEFF'; let c=B+'姓名,部门,职位,手机号,内线\n';
+  state.employees.forEach(e=>{c+=`${(e.name||'').replace(/,/g,'，')},${e.department.replace(/,/g,'，')},${e.position.replace(/,/g,'，')},${e.mobile||''},${e.ext||''}\n`});
+  download(c,`通讯录_${today()}.csv`,'text/csv;charset=utf-8');
+  toast('CSV 导出成功','success');
+}
+function exportCSVFull() {
+  const B='\uFEFF';
+  let c = B + '类别,名称/姓名,部门/分类,职位/说明,手机号,内线\n';
+  // 员工
+  state.employees.forEach(e=>{
+    c+=`员工,${(e.name||'【'+e.position+'】').replace(/,/g,'，')},${e.department.replace(/,/g,'，')},${e.position.replace(/,/g,'，')},${e.mobile||''},${e.ext||''}\n`;
+  });
+  // 服务热线
+  (state.facilities||[]).forEach(f=>{
+    c+=`服务热线,${f.name.replace(/,/g,'，')},,${f.desc.replace(/,/g,'，')},,${f.ext}\n`;
+  });
+  // 部门内线
+  Object.keys(state.deptExts||{}).forEach(dept=>{
+    (state.deptExts[dept]||[]).forEach(e=>{
+      c+=`部门内线,${e.label.replace(/,/g,'，')},${dept.replace(/,/g,'，')},,,${e.ext}\n`;
+    });
+  });
+  // 应急电话
+  (state.emergency||[]).forEach(e=>{
+    c+=`应急电话,${e.name.replace(/,/g,'，')},,${e.desc.replace(/,/g,'，')},${e.mobile},\n`;
+  });
+  download(c,`通讯录_完整_${today()}.csv`,'text/csv;charset=utf-8');
+  toast('完整 CSV 导出成功','success');
+}
+function exportHTML() {
+  const d = new Date();
+  const dateStr = d.toLocaleDateString('zh-CN',{year:'numeric',month:'2-digit',day:'2-digit'});
+  const timeStr = d.toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
+  const groups = groupByDept(state.employees);
+
+  let html = `<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><title>青海开元大饭店 · 员工通讯录</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Microsoft YaHei','PingFang SC','Noto Sans SC',sans-serif;color:#1a1a2e;padding:40px;background:#fff}
+.hdr{text-align:center;margin-bottom:32px;border-bottom:2px solid #c9a84c;padding-bottom:20px}
+.hdr h1{font-size:22px;letter-spacing:2px;margin-bottom:4px}
+.hdr .sub{color:#a07c2e;font-size:13px;letter-spacing:1px}
+.hdr .meta{color:#94a3b8;font-size:11px;margin-top:8px}
+.section{margin-bottom:24px;page-break-inside:avoid}
+.sec-title{font-size:14px;font-weight:700;color:#c9a84c;border-bottom:1px solid #e8e4df;padding-bottom:6px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.sec-title .icon{font-size:16px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#f8f6f3;color:#64748b;font-weight:600;text-align:left;padding:8px 12px;border:1px solid #e8e4df;font-size:11px}
+td{padding:8px 12px;border:1px solid #e8e4df}
+tr:nth-child(even){background:#faf8f5}
+.no-name{color:#a07c2e;font-style:italic}
+.fac-row{background:#fffbeb}
+.emg-row{background:#fef2f2;color:#dc2626}
+.footer{text-align:center;color:#cbd5e1;font-size:11px;margin-top:32px;padding-top:16px;border-top:1px solid #e8e4df}
+@media print{
+  body{padding:20px}
+  .section{page-break-inside:avoid}
+  @page{margin:15mm}
+}
+</style></head><body>
+<div class="hdr">
+  <h1>🏔️ 青海开元大饭店</h1>
+  <div class="sub">员工通讯录</div>
+  <div class="meta">导出时间：${dateStr} ${timeStr} · 共 ${state.employees.length} 人</div>
+</div>`;
+
+  // 高管
+  const leaders = groups['高管'] || [];
+  if (leaders.length) {
+    html += `<div class="section"><div class="sec-title"><span class="icon">👑</span>酒店高管</div><table>
+    <tr><th>姓名</th><th>职位</th><th>手机号</th><th>内线</th></tr>`;
+    leaders.forEach(e=>{
+      html+=`<tr><td><b>${e.name}</b></td><td>${e.position}</td><td>${e.mobile||'—'}</td><td>${e.ext||'—'}</td></tr>`;
+    });
+    html += `</table></div>`;
+  }
+
+  // 其他部门
+  DEPT_ORDER.filter(d=>d!=='高管').forEach(dept=>{
+    const emps = groups[dept] || [];
+    if (!emps.length) return;
+    const ic = DEPT_ICONS[dept] || {i:'📌'};
+    const deptExts = (state.deptExts && state.deptExts[dept]) || [];
+    html += `<div class="section"><div class="sec-title"><span class="icon">${ic.i}</span>${dept}</div><table>
+    <tr><th>姓名</th><th>职位</th><th>手机号</th><th>内线</th></tr>`;
+    emps.forEach(e=>{
+      const dn = e.name || `<span class="no-name">【${e.position}】</span>`;
+      html+=`<tr><td><b>${dn}</b></td><td>${e.position}</td><td>${e.mobile||'—'}</td><td>${e.ext||'—'}</td></tr>`;
+    });
+    deptExts.forEach(f=>{
+      html+=`<tr class="fac-row"><td>📍 ${f.label}</td><td>部门设施</td><td>—</td><td>${f.ext||'—'}</td></tr>`;
+    });
+    html += `</table></div>`;
+  });
+
+  // 服务热线
+  if ((state.facilities||[]).length) {
+    html += `<div class="section"><div class="sec-title"><span class="icon">🎯</span>服务热线</div><table>
+    <tr><th>名称</th><th>说明</th><th>号码</th></tr>`;
+    state.facilities.forEach(f=>{
+      html+=`<tr><td>${f.icon||''} ${f.name}</td><td>${f.desc}</td><td><b>${f.ext}</b></td></tr>`;
+    });
+    html += `</table></div>`;
+  }
+
+  // 应急电话
+  if ((state.emergency||[]).length) {
+    html += `<div class="section"><div class="sec-title"><span class="icon">🚨</span>外部应急电话</div><table>
+    <tr><th>名称</th><th>说明</th><th>电话</th></tr>`;
+    state.emergency.forEach(e=>{
+      html+=`<tr class="emg-row"><td>${e.name}</td><td>${e.desc}</td><td><b>${e.mobile}</b></td></tr>`;
+    });
+    html += `</table></div>`;
+  }
+
+  html += `<div class="footer">青海开元大饭店 · 内部通讯录 · ${dateStr} ${timeStr}</div>`;
+  html += `<script>setTimeout(()=>{window.print()},600)<\/script>
+<script>
+// PWA Service Worker
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').catch(function(){});
+}
+var _deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();_deferredPrompt=e;_showInstall()});
+window.addEventListener('appinstalled',function(){_deferredPrompt=null;var b=document.getElementById('_installB');if(b)b.remove()});
+function _showInstall(){
+  if(document.getElementById('_installB'))return;
+  var b=document.createElement('div');b.id='_installB';
+  b.style.cssText='position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,rgba(255,255,255,.1),rgba(255,255,255,.04));backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.12);padding:14px 22px;border-radius:16px;z-index:99999;display:flex;align-items:center;gap:12px;color:#fff;font-size:13px;box-shadow:0 8px 32px rgba(0,0,0,.4);font-family:inherit;max-width:92vw';
+  b.innerHTML='<span style="font-size:24px">📱</span><div style="flex:1"><div style="font-weight:700">安装到手机</div><div style="color:rgba(255,255,255,.5);font-size:11px;margin-top:2px">像App一样使用，支持离线</div></div><button onclick="_doInstall()" style="background:linear-gradient(135deg,#d4a853,#f0d48a);color:#0c1220;border:none;padding:8px 18px;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit">安装</button><button onclick="this.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:18px;padding:0 4px">✕</button>';
+  document.body.appendChild(b);
+}
+function _doInstall(){if(!_deferredPrompt)return;_deferredPrompt.prompt();_deferredPrompt.userChoice.then(function(){_deferredPrompt=null;var b=document.getElementById('_installB');if(b)b.remove()})}
+</script>
+</body></html>`;
+
+  const w = window.open('','_blank');
+  if(w){w.document.write(html);w.document.close();toast('报表已生成','success')}
+  else{toast('请允许弹出窗口','error')}
+}
+function download(c,n,t){const b=new Blob([c],{type:t}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=n;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u)}
+function importData(file){
+  const r=new FileReader(), csv=file.name.endsWith('.csv');
+  r.onload=e=>{
+    try{
+      let imp;
+      if(csv){const ls=e.target.result.replace(/^\uFEFF/,'').trim().split('\n');if(ls.length<2)throw new Error('空文件');imp=[];for(let i=1;i<ls.length;i++){const c=ls[i].split(',');if(c.length<3)continue;imp.push({id:genId(),name:(c[0]||'').trim(),department:(c[1]||'').trim(),position:(c[2]||'').trim(),mobile:(c[3]||'').trim(),ext:(c[4]||'').trim()})}}
+      else{const d=JSON.parse(e.target.result);imp=d.employees||(Array.isArray(d)?d:null);if(!imp)throw new Error('格式错误')}
+      const v=imp.filter(e=>e.department&&e.position);if(!v.length)throw new Error('无有效数据');
+      v.forEach((e,i)=>e.id=genId());
+      state.employees=v; if(!csv&&imp.deptExts)state.deptExts=imp.deptExts;
+      saveState();openDepts.clear();searchQ='';filterDept='';render();toast(`导入成功 ${v.length} 条`,'success');
+    }catch(er){toast(er.message||'解析失败','error')}
+  };r.readAsText(file);
+}
+function resetData(){
+  if(!confirm('重置为默认数据？将丢失所有修改。'))return;
+  state=JSON.parse(JSON.stringify(DATA));saveState();render();toast('已重置','success');
+}
+
+// ─── Export Menu ───
+function showExportMenu(e) {
+  e.stopPropagation();
+  // Remove existing menu
+  const old = document.getElementById('expMenu');
+  if(old){old.remove();return}
+  const btn = e.currentTarget;
+  const rect = btn.getBoundingClientRect();
+  const m = document.createElement('div');
+  m.id = 'expMenu';
+  m.style.cssText = `position:fixed;top:${rect.bottom+4}px;right:${window.innerWidth-rect.right}px;background:#fff;border:1px solid #e8e4df;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.12);z-index:250;min-width:200px;overflow:hidden;animation:fadeIn .15s ease`;
+  m.innerHTML = `
+    <button onclick="this.parentElement.remove();exportHTML()" style="display:flex;align-items:center;gap:8px;width:100%;padding:11px 16px;border:none;background:none;font-size:13px;cursor:pointer;font-family:inherit;text-align:left;color:#1a1a2e;border-bottom:1px solid #f0ece7">📋 打印报表（推荐）</button>
+    <button onclick="this.parentElement.remove();exportCSVFull()" style="display:flex;align-items:center;gap:8px;width:100%;padding:11px 16px;border:none;background:none;font-size:13px;cursor:pointer;font-family:inherit;text-align:left;color:#1a1a2e;border-bottom:1px solid #f0ece7">📊 完整 CSV</button>
+    <button onclick="this.parentElement.remove();exportJSON()" style="display:flex;align-items:center;gap:8px;width:100%;padding:11px 16px;border:none;background:none;font-size:13px;cursor:pointer;font-family:inherit;text-align:left;color:#1a1a2e;border-bottom:1px solid #f0ece7">💾 JSON 备份</button>
+    <button onclick="this.parentElement.remove();exportCSV()" style="display:flex;align-items:center;gap:8px;width:100%;padding:11px 16px;border:none;background:none;font-size:13px;cursor:pointer;font-family:inherit;text-align:left;color:#1a1a2e">📄 员工 CSV</button>
+  `;
+  document.body.appendChild(m);
+  setTimeout(()=>document.addEventListener('click',function rm(){m.remove();document.removeEventListener('click',rm)},{once:true}),50);
+}
+
+function toast(msg,type){
+  const t=document.createElement('div');
+  t.style.cssText=`position:fixed;bottom:80px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:12px;font-size:13px;z-index:999;box-shadow:0 12px 32px rgba(0,0,0,.15);font-family:inherit;transition:all .4s cubic-bezier(.4,0,.2,1);backdrop-filter:blur(12px);font-weight:500;${type==='success'?'background:rgba(240,253,244,.95);color:#16a34a;border:1px solid #bbf7d0':'background:rgba(254,242,242,.95);color:#dc2626;border:1px solid #fecaca'}`;
+  t.textContent=(type==='success'?'✅ ':'❌ ')+msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(()=>{t.style.transform='translateX(-50%) translateY(0)';t.style.opacity='1'});
+  setTimeout(()=>{t.style.transform='translateX(-50%) translateY(10px)';t.style.opacity='0'},2200);
+  setTimeout(()=>t.remove(),2700);
+}
+
+document.getElementById('fileInput').addEventListener('change',function(e){if(e.target.files[0])importData(e.target.files[0]);e.target.value=''});
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&document.activeElement.tagName!=='INPUT'){e.preventDefault();document.getElementById('si')?.focus()}
+  if(e.key==='Escape'){closeEmpModal();closeDelModal();closeExtModal();closeEmergModal();const dr=document.getElementById('dr');if(dr?.classList.contains('open'))toggleDrawer()}
+});
+
+// Splash hide
+setTimeout(()=>{const s=document.getElementById('splash');if(s)s.classList.add('hide')},500);
+render();
+</script>
+</body>
+</html>

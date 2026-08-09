@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0c1220">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="海迪耶管理系统">
+<meta name="format-detection" content="telephone=no">
+<meta name="msapplication-TileColor" content="#0c1220">
+<meta name="description" content="海迪耶国际饭店内部管理系统导航">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>海迪耶国际饭店 · 内部管理系统</title>
+<style>
+/* ===== Reset & Variables ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue-400:#60a5fa;--blue-500:#3b82f6;--blue-600:#2563eb;--blue-700:#1d4ed8;
+  --purple-400:#c084fc;--purple-500:#a855f7;--purple-600:#9333ea;
+  --green-400:#4ade80;--green-500:#22c55e;--green-600:#16a34a;
+  --orange-400:#fb923c;--orange-500:#f97316;--orange-600:#ea580c;
+  --gold:#d4a853;--gold-light:#f0d48a;--gold-dark:#b8922e;
+  --bg-deep:#0a0e1a;--bg-mid:#0c1220;--bg-card:rgba(255,255,255,.04);
+}
+html{font-size:16px;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  color:#fff;min-height:100vh;min-height:100dvh;overflow-x:hidden;
+  background:var(--bg-deep);
+}
+
+/* ===== Cinematic Background ===== */
+.bg-scene{position:fixed;inset:0;z-index:0;overflow:hidden}
+.bg-scene::before{
+  content:"";position:absolute;inset:-20%;
+  background:
+    radial-gradient(ellipse 90% 70% at 15% 5%,rgba(37,99,235,.18) 0%,transparent 55%),
+    radial-gradient(ellipse 70% 60% at 85% 85%,rgba(147,51,234,.14) 0%,transparent 55%),
+    radial-gradient(ellipse 80% 50% at 50% 50%,rgba(212,168,83,.06) 0%,transparent 50%),
+    radial-gradient(ellipse 50% 40% at 70% 20%,rgba(249,115,22,.08) 0%,transparent 50%);
+  animation:bgShift 25s ease-in-out infinite alternate;
+}
+@keyframes bgShift{
+  0%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(-3%,2%) scale(1.03)}
+  100%{transform:translate(2%,-1%) scale(.98)}
+}
+.bg-orb{
+  position:absolute;border-radius:50%;filter:blur(100px);opacity:.3;
+  animation:orbFloat 20s ease-in-out infinite alternate;
+}
+.bg-orb:nth-child(1){width:min(50vw,500px);height:min(50vw,500px);background:var(--blue-600);top:-15%;left:-10%;animation-duration:22s}
+.bg-orb:nth-child(2){width:min(45vw,450px);height:min(45vw,450px);background:var(--purple-600);bottom:-15%;right:-10%;animation-duration:18s;animation-delay:3s}
+.bg-orb:nth-child(3){width:min(30vw,300px);height:min(30vw,300px);background:var(--orange-500);top:35%;left:55%;animation-duration:25s;animation-delay:6s;opacity:.18}
+.bg-orb:nth-child(4){width:min(25vw,250px);height:min(25vw,250px);background:var(--gold);top:60%;left:10%;animation-duration:28s;animation-delay:9s;opacity:.1;filter:blur(120px)}
+@keyframes orbFloat{
+  0%{transform:translate(0,0) scale(1)}
+  33%{transform:translate(40px,-50px) scale(1.08)}
+  66%{transform:translate(-30px,40px) scale(.92)}
+  100%{transform:translate(15px,-15px) scale(1.03)}
+}
+
+/* Grid overlay */
+.bg-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);
+  background-size:80px 80px;
+  mask-image:radial-gradient(ellipse 70% 60% at 50% 40%,black,transparent);
+  -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 40%,black,transparent);
+}
+
+/* Radial glow at top */
+.bg-glow-top{
+  position:absolute;top:-20%;left:50%;transform:translateX(-50%);
+  width:120%;height:60%;
+  background:radial-gradient(ellipse at center,rgba(212,168,83,.06) 0%,transparent 70%);
+  pointer-events:none;animation:glowPulse 8s ease-in-out infinite;
+}
+@keyframes glowPulse{0%,100%{opacity:.6;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.05)}}
+
+/* ===== Floating Particles ===== */
+.particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.particle{
+  position:absolute;border-radius:50%;
+  background:rgba(255,255,255,.3);
+  animation:particleRise linear infinite;
+}
+/* Gold sparkle particles */
+.particle.gold{background:rgba(212,168,83,.5);box-shadow:0 0 6px rgba(212,168,83,.3)}
+.particle:nth-child(1){left:8%;width:2px;height:2px;animation-duration:16s;animation-delay:0s}
+.particle:nth-child(2){left:20%;width:3px;height:3px;animation-duration:19s;animation-delay:2s}
+.particle:nth-child(3){left:35%;width:1.5px;height:1.5px;animation-duration:13s;animation-delay:4s}
+.particle:nth-child(4){left:50%;width:2px;height:2px;animation-duration:21s;animation-delay:1s}
+.particle:nth-child(5){left:65%;width:2.5px;height:2.5px;animation-duration:17s;animation-delay:3s}
+.particle:nth-child(6){left:78%;width:3px;height:3px;animation-duration:15s;animation-delay:5s}
+.particle:nth-child(7){left:12%;width:1px;height:1px;animation-duration:23s;animation-delay:7s}
+.particle:nth-child(8){left:58%;width:2px;height:2px;animation-duration:18s;animation-delay:6s}
+.particle:nth-child(9){left:88%;width:1.5px;height:1.5px;animation-duration:20s;animation-delay:2s}
+.particle:nth-child(10){left:42%;width:1px;height:1px;animation-duration:22s;animation-delay:8s}
+.particle:nth-child(11){left:30%;width:2px;height:2px;animation-duration:14s;animation-delay:1.5s}
+.particle:nth-child(12){left:75%;width:1px;height:1px;animation-duration:24s;animation-delay:4.5s}
+.particle:nth-child(13){left:5%;width:2.5px;height:2.5px;animation-duration:16s;animation-delay:9s}
+.particle:nth-child(14){left:92%;width:1.5px;height:1.5px;animation-duration:19s;animation-delay:0.5s}
+.particle:nth-child(15){left:48%;width:2px;height:2px;animation-duration:21s;animation-delay:3.5s}
+@keyframes particleRise{
+  0%{bottom:-5%;opacity:0;transform:translateX(0) scale(1)}
+  8%{opacity:.7}
+  50%{transform:translateX(35px) scale(1.2)}
+  85%{opacity:.15}
+  100%{bottom:108%;opacity:0;transform:translateX(-25px) scale(.6)}
+}
+
+/* ===== Decorative SVG Patterns ===== */
+.deco-pattern{
+  position:fixed;z-index:0;pointer-events:none;opacity:.03;
+}
+.deco-pattern.top-right{top:5%;right:5%;width:min(30vw,200px);height:min(30vw,200px)}
+.deco-pattern.bottom-left{bottom:10%;left:3%;width:min(25vw,160px);height:min(25vw,160px);transform:rotate(180deg)}
+
+/* ===== Main Container ===== */
+.portal{
+  position:relative;z-index:1;min-height:100vh;min-height:100dvh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:env(safe-area-inset-top,20px) 20px env(safe-area-inset-bottom,20px);
+  padding:calc(env(safe-area-inset-top,0px) + 24px) 20px calc(env(safe-area-inset-bottom,0px) + 24px);
+}
+
+/* ===== Header ===== */
+.header{text-align:center;margin-bottom:40px;animation:headerReveal 1s cubic-bezier(.22,1,.36,1)}
+@keyframes headerReveal{
+  from{opacity:0;transform:translateY(-40px) scale(.95);filter:blur(8px)}
+  to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+}
+
+/* Logo container */
+.logo-wrap{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:auto;min-width:200px;max-width:360px;height:84px;border-radius:24px;
+  margin-bottom:20px;padding:0 30px;
+  background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.02));
+  backdrop-filter:blur(30px) saturate(1.2);-webkit-backdrop-filter:blur(30px) saturate(1.2);
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:
+    0 8px 40px rgba(0,0,0,.4),
+    inset 0 1px 0 rgba(255,255,255,.08),
+    0 0 80px rgba(212,168,83,.05);
+  position:relative;overflow:hidden;
+}
+.logo-wrap::before{
+  content:"";position:absolute;inset:-2px;border-radius:26px;
+  background:conic-gradient(from 180deg,var(--blue-500),var(--purple-500),var(--gold),var(--orange-500),var(--blue-500));
+  z-index:-1;opacity:.45;animation:logoSpin 8s linear infinite;
+}
+.logo-wrap::after{
+  content:"";position:absolute;inset:0;border-radius:24px;
+  background:linear-gradient(180deg,rgba(255,255,255,.06),transparent 60%);
+  pointer-events:none;
+}
+@keyframes logoSpin{to{transform:rotate(360deg)}}
+.logo-wrap img{height:54px;width:auto;max-width:290px;border-radius:14px;object-fit:contain;position:relative;z-index:1}
+
+/* Badge */
+.badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:7px 18px;border-radius:999px;font-size:.68rem;font-weight:700;
+  background:rgba(212,168,83,.08);color:var(--gold);
+  border:1px solid rgba(212,168,83,.18);margin-bottom:18px;
+  letter-spacing:.12em;text-transform:uppercase;
+  backdrop-filter:blur(10px);
+}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s ease-in-out infinite;box-shadow:0 0 8px rgba(212,168,83,.4)}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+
+/* Hotel name */
+.hotel-name{
+  font-size:clamp(1.6rem,5vw,2.2rem);font-weight:900;
+  background:linear-gradient(135deg,#fff 0%,var(--gold-light) 40%,var(--gold) 70%,#fff 100%);
+  background-size:300% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;letter-spacing:.06em;
+  animation:shimmer 5s ease-in-out infinite;
+  text-shadow:none;
+  filter:drop-shadow(0 2px 10px rgba(212,168,83,.15));
+}
+@keyframes shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+
+.hotel-sub{
+  font-size:.82rem;color:rgba(255,255,255,.35);margin-top:10px;letter-spacing:.2em;
+  font-weight:500;
+}
+
+/* Decorative line */
+.deco-line{
+  width:50px;height:2px;border-radius:2px;margin:0 auto 40px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  opacity:.4;position:relative;overflow:hidden;
+  animation:fadeInUp .8s ease-out .3s both;
+}
+.deco-line::after{
+  content:"";position:absolute;top:0;left:-100%;width:60%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.8),transparent);
+  animation:decoFlow 3s ease-in-out infinite;
+}
+@keyframes decoFlow{0%{left:-60%}100%{left:160%}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== Cards Grid ===== */
+.cards{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:16px;
+  max-width:560px;width:100%;margin-bottom:36px;
+}
+@media(max-width:480px){
+  .cards{grid-template-columns:1fr;max-width:380px;gap:14px}
+}
+
+/* ===== Card ===== */
+.card{
+  position:relative;display:block;border-radius:24px;padding:28px 24px;
+  background:linear-gradient(145deg,rgba(255,255,255,.06),rgba(255,255,255,.015));
+  backdrop-filter:blur(30px) saturate(1.1);-webkit-backdrop-filter:blur(30px) saturate(1.1);
+  border:1px solid rgba(255,255,255,.07);
+  text-decoration:none;color:#fff;overflow:hidden;
+  transition:all .5s cubic-bezier(.22,1,.36,1);
+  animation:cardIn .7s cubic-bezier(.22,1,.36,1) both;
+  cursor:pointer;
+  -webkit-user-select:none;user-select:none;
+}
+.card:nth-child(1){animation-delay:.15s}
+.card:nth-child(2){animation-delay:.25s}
+.card:nth-child(3){animation-delay:.35s}
+.card:nth-child(4){animation-delay:.45s}
+@keyframes cardIn{from{opacity:0;transform:translateY(30px) scale(.94);filter:blur(4px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+
+/* Inner glow overlay */
+.card .card-glow{
+  position:absolute;inset:0;border-radius:24px;opacity:0;
+  transition:opacity .5s;pointer-events:none;
+}
+.card:hover .card-glow{opacity:1}
+.card[data-theme="blue"] .card-glow{background:radial-gradient(ellipse at 30% 20%,rgba(59,130,246,.08),transparent 70%)}
+.card[data-theme="purple"] .card-glow{background:radial-gradient(ellipse at 30% 20%,rgba(168,85,247,.08),transparent 70%)}
+.card[data-theme="green"] .card-glow{background:radial-gradient(ellipse at 30% 20%,rgba(34,197,94,.08),transparent 70%)}
+.card[data-theme="orange"] .card-glow{background:radial-gradient(ellipse at 30% 20%,rgba(249,115,22,.08),transparent 70%)}
+
+/* Bottom accent bar */
+.card .card-accent-bar{
+  position:absolute;bottom:0;left:20%;right:20%;height:2px;border-radius:2px 2px 0 0;
+  opacity:.4;transition:all .5s cubic-bezier(.22,1,.36,1);filter:blur(1px);
+}
+.card:hover .card-accent-bar{left:8%;right:8%;opacity:.9;filter:blur(0);height:3px}
+.card[data-theme="blue"] .card-accent-bar{background:linear-gradient(90deg,transparent,var(--blue-400),var(--blue-500),var(--blue-400),transparent)}
+.card[data-theme="purple"] .card-accent-bar{background:linear-gradient(90deg,transparent,var(--purple-400),var(--purple-500),var(--purple-400),transparent)}
+.card[data-theme="green"] .card-accent-bar{background:linear-gradient(90deg,transparent,var(--green-400),var(--green-500),var(--green-400),transparent)}
+.card[data-theme="orange"] .card-accent-bar{background:linear-gradient(90deg,transparent,var(--orange-400),var(--orange-500),var(--orange-400),transparent)}
+
+/* Glow border on hover */
+.card::before{
+  content:"";position:absolute;inset:0;border-radius:24px;padding:1px;
+  background:var(--card-accent);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  opacity:0;transition:opacity .5s;
+}
+.card:hover::before{opacity:.8}
+
+/* Light sweep on hover */
+.card::after{
+  content:"";position:absolute;top:0;left:-120%;width:50%;height:100%;
+  background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.05) 45%,rgba(255,255,255,.1) 50%,rgba(255,255,255,.05) 55%,transparent 70%);
+  transition:left .7s cubic-bezier(.22,1,.36,1);
+  pointer-events:none;
+}
+.card:hover::after{left:140%}
+
+.card:hover{
+  transform:translateY(-8px) scale(1.02);
+  border-color:rgba(255,255,255,.14);
+  background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.03));
+}
+.card[data-theme="blue"]:hover{box-shadow:0 24px 48px rgba(0,0,0,.35),0 0 40px rgba(59,130,246,.1),0 0 80px rgba(59,130,246,.05)}
+.card[data-theme="purple"]:hover{box-shadow:0 24px 48px rgba(0,0,0,.35),0 0 40px rgba(168,85,247,.1),0 0 80px rgba(168,85,247,.05)}
+.card[data-theme="green"]:hover{box-shadow:0 24px 48px rgba(0,0,0,.35),0 0 40px rgba(34,197,94,.1),0 0 80px rgba(34,197,94,.05)}
+.card[data-theme="orange"]:hover{box-shadow:0 24px 48px rgba(0,0,0,.35),0 0 40px rgba(249,115,22,.1),0 0 80px rgba(249,115,22,.05)}
+.card:active{transform:translateY(-3px) scale(.99);transition-duration:.15s}
+
+/* Card accent colors */
+.card[data-theme="blue"]{--card-accent:linear-gradient(135deg,var(--blue-400),var(--blue-600))}
+.card[data-theme="purple"]{--card-accent:linear-gradient(135deg,var(--purple-400),var(--purple-600))}
+.card[data-theme="green"]{--card-accent:linear-gradient(135deg,var(--green-400),var(--green-600))}
+.card[data-theme="orange"]{--card-accent:linear-gradient(135deg,var(--orange-400),var(--orange-600))}
+
+/* Card icon */
+.card-icon{
+  width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;margin-bottom:18px;position:relative;z-index:1;
+  transition:all .4s cubic-bezier(.22,1,.36,1);
+}
+.card-icon::after{
+  content:"";position:absolute;inset:-4px;border-radius:20px;
+  background:inherit;opacity:0;filter:blur(12px);transition:opacity .4s;z-index:-1;
+}
+.card:hover .card-icon{transform:scale(1.12) rotate(-4deg)}
+.card:hover .card-icon::after{opacity:.4}
+.card[data-theme="blue"] .card-icon{background:rgba(59,130,246,.18);color:var(--blue-400)}
+.card[data-theme="purple"] .card-icon{background:rgba(168,85,247,.18);color:var(--purple-400)}
+.card[data-theme="green"] .card-icon{background:rgba(34,197,94,.18);color:var(--green-400)}
+.card[data-theme="orange"] .card-icon{background:rgba(249,115,22,.18);color:var(--orange-400)}
+
+/* Card number */
+.card-num{
+  position:absolute;top:16px;right:18px;font-size:.6rem;font-weight:900;
+  color:rgba(255,255,255,.08);letter-spacing:.06em;z-index:1;
+  font-variant-numeric:tabular-nums;
+}
+
+/* Card text */
+.card-title{
+  font-size:1.05rem;font-weight:800;margin-bottom:6px;position:relative;z-index:1;
+  line-height:1.45;letter-spacing:.02em;
+}
+.card-desc{
+  font-size:.78rem;color:rgba(255,255,255,.4);line-height:1.55;margin-bottom:16px;
+  position:relative;z-index:1;
+}
+.card-enter{
+  display:inline-flex;align-items:center;gap:7px;
+  font-size:.72rem;font-weight:700;letter-spacing:.08em;
+  padding:7px 16px;border-radius:999px;position:relative;z-index:1;
+  transition:all .35s cubic-bezier(.22,1,.36,1);
+}
+.card[data-theme="blue"] .card-enter{background:rgba(59,130,246,.12);color:var(--blue-400)}
+.card[data-theme="purple"] .card-enter{background:rgba(168,85,247,.12);color:var(--purple-400)}
+.card[data-theme="green"] .card-enter{background:rgba(34,197,94,.12);color:var(--green-400)}
+.card[data-theme="orange"] .card-enter{background:rgba(249,115,22,.12);color:var(--orange-400)}
+.card:hover .card-enter{padding-right:20px;background:rgba(255,255,255,.08)}
+.card-enter svg{width:14px;height:14px;transition:transform .35s cubic-bezier(.22,1,.36,1)}
+.card:hover .card-enter svg{transform:translateX(4px)}
+
+/* ===== Footer ===== */
+.footer-area{text-align:center;animation:fadeInUp .8s ease-out .6s both}
+
+.admin-btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:12px 28px;border-radius:14px;border:1px solid rgba(255,255,255,.06);
+  background:rgba(255,255,255,.03);backdrop-filter:blur(16px);
+  color:rgba(255,255,255,.35);font-size:.82rem;font-weight:600;
+  cursor:pointer;transition:all .35s;text-decoration:none;
+  position:relative;overflow:hidden;letter-spacing:.04em;
+}
+.admin-btn::before{
+  content:"";position:absolute;inset:-1px;border-radius:14px;
+  background:conic-gradient(from 0deg,transparent 60%,rgba(212,168,83,.12) 80%,transparent 100%);
+  animation:adminSpin 5s linear infinite;opacity:0;transition:opacity .35s;
+}
+.admin-btn:hover::before{opacity:1}
+.admin-btn:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.65);border-color:rgba(212,168,83,.18)}
+.admin-btn span,.admin-btn svg{position:relative;z-index:1}
+@keyframes adminSpin{to{transform:rotate(360deg)}}
+.admin-btn svg{width:16px;height:16px;opacity:.5}
+
+.copyright{
+  margin-top:22px;font-size:.7rem;color:rgba(255,255,255,.18);letter-spacing:.06em;
+}
+
+/* ===== PWA Install Banner ===== */
+.install-banner{
+  position:fixed;bottom:0;left:0;right:0;z-index:1000;
+  padding:16px 20px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));
+  background:linear-gradient(180deg,rgba(12,18,32,.85),rgba(12,18,32,.98));
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-top:1px solid rgba(212,168,83,.15);
+  display:none;align-items:center;justify-content:center;gap:14px;
+  animation:slideUp .5s cubic-bezier(.22,1,.36,1);
+  box-shadow:0 -8px 40px rgba(0,0,0,.4);
+}
+.install-banner.show{display:flex}
+@keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+.install-banner .install-icon{
+  width:44px;height:44px;border-radius:12px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.install-banner .install-icon svg{width:22px;height:22px;color:#0c1220}
+.install-banner .install-text{flex:1;min-width:0}
+.install-banner .install-title{font-size:.85rem;font-weight:700;color:#fff;margin-bottom:2px}
+.install-banner .install-desc{font-size:.7rem;color:rgba(255,255,255,.45)}
+.install-banner .install-btn{
+  padding:10px 22px;border-radius:12px;border:none;
+  background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+  color:#0c1220;font-size:.8rem;font-weight:800;
+  cursor:pointer;white-space:nowrap;flex-shrink:0;
+  transition:all .3s;letter-spacing:.04em;
+}
+.install-banner .install-btn:hover{transform:scale(1.04);box-shadow:0 4px 20px rgba(212,168,83,.3)}
+.install-banner .install-close{
+  width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.05);color:rgba(255,255,255,.4);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .3s;font-size:1rem;
+}
+.install-banner .install-close:hover{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7)}
+
+/* ===== Mobile Responsive ===== */
+@media(max-width:380px){
+  .portal{padding:calc(env(safe-area-inset-top,0px) + 16px) 14px calc(env(safe-area-inset-bottom,0px) + 16px)}
+  .card{padding:24px 20px;border-radius:20px}
+  .card-title{font-size:.95rem}
+  .card-icon{width:46px;height:46px;border-radius:14px}
+  .hotel-name{font-size:1.4rem}
+}
+@media(min-width:481px) and (max-width:768px){
+  .cards{max-width:520px}
+}
+
+/* ===== Print ===== */
+@media print{
+  .bg-scene,.particles,.deco-pattern,.install-banner{display:none!important}
+  body{background:#fff!important}
+  .portal{min-height:auto}
+  .card{background:#f8f9fa!important;border:1px solid #ddd!important;color:#333!important}
+}
+
+/* ===== Reduced Motion ===== */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<!-- Cinematic Background -->
+<div class="bg-scene">
+  <div class="bg-orb"></div>
+  <div class="bg-orb"></div>
+  <div class="bg-orb"></div>
+  <div class="bg-orb"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-glow-top"></div>
+</div>
+
+<!-- Decorative SVG Patterns -->
+<div class="deco-pattern top-right">
+  <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="100" cy="100" r="80" stroke="rgba(212,168,83,.5)" stroke-width=".5"/>
+    <circle cx="100" cy="100" r="60" stroke="rgba(212,168,83,.4)" stroke-width=".5"/>
+    <circle cx="100" cy="100" r="40" stroke="rgba(212,168,83,.3)" stroke-width=".5"/>
+    <line x1="100" y1="10" x2="100" y2="190" stroke="rgba(212,168,83,.2)" stroke-width=".3"/>
+    <line x1="10" y1="100" x2="190" y2="100" stroke="rgba(212,168,83,.2)" stroke-width=".3"/>
+    <line x1="30" y1="30" x2="170" y2="170" stroke="rgba(212,168,83,.15)" stroke-width=".3"/>
+    <line x1="170" y1="30" x2="30" y2="170" stroke="rgba(212,168,83,.15)" stroke-width=".3"/>
+  </svg>
+</div>
+<div class="deco-pattern bottom-left">
+  <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="100,10 190,75 165,170 35,170 10,75" stroke="rgba(59,130,246,.4)" stroke-width=".5" fill="none"/>
+    <polygon points="100,35 165,82 150,155 50,155 35,82" stroke="rgba(59,130,246,.3)" stroke-width=".5" fill="none"/>
+    <polygon points="100,60 140,90 130,140 70,140 60,90" stroke="rgba(59,130,246,.2)" stroke-width=".5" fill="none"/>
+  </svg>
+</div>
+
+<!-- Floating Particles -->
+<div class="particles">
+  <div class="particle"></div><div class="particle gold"></div><div class="particle"></div>
+  <div class="particle"></div><div class="particle gold"></div><div class="particle"></div>
+  <div class="particle"></div><div class="particle"></div><div class="particle gold"></div>
+  <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+  <div class="particle gold"></div><div class="particle"></div><div class="particle"></div>
+</div>
+
+<!-- Main Portal -->
+<div class="portal">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo-wrap">
+      <img src="https://hzf76fm42sag6.ok.kimi.link/logo.jpg" alt="海迪耶国际饭店" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\x27font-size:2rem;letter-spacing:.12em;color:rgba(255,255,255,.7);font-weight:800\x27>海迪耶国际饭店</span>'">
+    </div>
+    <div class="badge"><span class="badge-dot"></span> INTERNAL PORTAL</div>
+    <h1 class="hotel-name">海迪耶国际饭店</h1>
+    <p class="hotel-sub">内 部 管 理 系 统 导 航</p>
+  </div>
+
+  <div class="deco-line"></div>
+
+  <!-- System Cards -->
+  <div class="cards">
+
+    <a href="https://zfwveb4lzuxe6.ok.kimi.link" class="card" data-theme="blue">
+      <div class="card-glow"></div>
+      <div class="card-num">01</div>
+      <div class="card-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+      </div>
+      <div class="card-title">车辆查询系统</div>
+      <div class="card-desc">查询酒店车辆及车主信息</div>
+      <span class="card-enter">
+        进入系统
+        <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <div class="card-accent-bar"></div>
+    </a>
+
+    <a href="https://wj6y4bms3lyom.ok.kimi.link" class="card" data-theme="purple">
+      <div class="card-glow"></div>
+      <div class="card-num">02</div>
+      <div class="card-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+      </div>
+      <div class="card-title">员工通讯录</div>
+      <div class="card-desc">查询酒店各部门员工联系信息</div>
+      <span class="card-enter">
+        进入系统
+        <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <div class="card-accent-bar"></div>
+    </a>
+
+    <a href="https://54gncdufmzg5g.ok.kimi.link" class="card" data-theme="green">
+      <div class="card-glow"></div>
+      <div class="card-num">03</div>
+      <div class="card-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg>
+      </div>
+      <div class="card-title">末端试水压力表</div>
+      <div class="card-desc">记录各楼层消防水压数据</div>
+      <span class="card-enter">
+        进入系统
+        <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <div class="card-accent-bar"></div>
+    </a>
+
+    <a href="https://oyq2wawntikr4.ok.kimi.link" class="card" data-theme="orange">
+      <div class="card-glow"></div>
+      <div class="card-num">04</div>
+      <div class="card-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/></svg>
+      </div>
+      <div class="card-title">消防知识培训</div>
+      <div class="card-desc">员工消防安全知识学习</div>
+      <span class="card-enter">
+        进入系统
+        <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <div class="card-accent-bar"></div>
+    </a>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer-area">
+    <a href="#" class="admin-btn" onclick="alert('请联系管理员获取后台权限');return false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <span>管理后台</span>
+    </a>
+    <p class="copyright">© 2026 海迪耶国际饭店 · 内部使用</p>
+  </div>
+
+</div>
+
+<!-- PWA Install Banner -->
+<div class="install-banner" id="installBanner">
+  <div class="install-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+  </div>
+  <div class="install-text">
+    <div class="install-title">添加到主屏幕</div>
+    <div class="install-desc">像App一样快速访问管理系统</div>
+  </div>
+  <button class="install-btn" id="installBtn">安装</button>
+  <button class="install-close" id="installClose" aria-label="关闭">✕</button>
+</div>
+
+<!-- Service Worker & PWA Scripts -->
+<script>
+(function(){
+  // Register Service Worker
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('sw.js').catch(function(e){
+      console.log('SW registration failed:',e);
+    });
+  }
+
+  // PWA Install Prompt
+  var deferredPrompt=null;
+  var banner=document.getElementById('installBanner');
+  var installBtn=document.getElementById('installBtn');
+  var installClose=document.getElementById('installClose');
+
+  // Check if already installed
+  if(window.matchMedia('(display-mode:standalone)').matches||window.navigator.standalone===true){
+    return; // Already installed, don't show banner
+  }
+
+  window.addEventListener('beforeinstallprompt',function(e){
+    e.preventDefault();
+    deferredPrompt=e;
+    // Show banner after a short delay for better UX
+    setTimeout(function(){banner.classList.add('show')},2000);
+  });
+
+  installBtn.addEventListener('click',function(){
+    if(!deferredPrompt)return;
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function(result){
+      if(result.outcome==='accepted'){
+        banner.classList.remove('show');
+      }
+      deferredPrompt=null;
+    });
+  });
+
+  installClose.addEventListener('click',function(){
+    banner.classList.remove('show');
+    // Remember dismissal for 7 days
+    try{localStorage.setItem('installDismissed',Date.now())}catch(e){}
+  });
+
+  // Respect previous dismissal
+  try{
+    var dismissed=localStorage.getItem('installDismissed');
+    if(dismissed&&(Date.now()-parseInt(dismissed))<7*24*60*60*1000){
+      // Don't show banner
+      window.removeEventListener('beforeinstallprompt',function(){});
+    }
+  }catch(e){}
+
+  window.addEventListener('appinstalled',function(){
+    banner.classList.remove('show');
+    deferredPrompt=null;
+  });
+})();
+</script>
+
+</body>
+</html>
